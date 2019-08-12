@@ -80,6 +80,10 @@
 /*
  * TODO: Global variables
  * */
+static PyObject *pName,
+                *pModule,
+                *pDict,
+                *p_rnd_veto;
 
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -7758,16 +7762,40 @@ int main(int argc, char** argv) {
     PyList_Append(path, PyUnicode_FromString("."));
 
     //TODO: Insert func defs
-    /*
-     * // pFuncQueryModel
-      pFuncQueryModel = PyDict_GetItemString(pDict, "query_model");
-      if (!pFuncQueryModel)
-      {
-          PyErr_Print();
-          printf("ERROR in pFuncQueryModel\n");
-          exit(1);
-      }
-     * */
+    //build name object for python module
+    pName = PyUnicode_FromString("rnd_network");
+    if (!pName)
+    {
+        PyErr_Print();
+        printf("ERROR in pName\n");
+        exit(1);
+    }
+
+    // Load module object
+    pModule = PyImport_Import(pName);
+    if (!pModule)
+    {
+        PyErr_Print();
+        printf("ERROR in pModule\n");
+        exit(1);
+    }
+
+    // pDict is a borrowed reference
+    pDict = PyModule_GetDict(pModule);
+    if (!pDict)
+    {
+        PyErr_Print();
+        printf("ERROR in pDict\n");
+        exit(1);
+    }
+
+    p_rnd_veto = PyDict_GetItemString(pDict, "rnd_veto");
+    if (!p_rnd_veto)
+    {
+        PyErr_Print();
+        printf("ERROR in pModule\n");
+        exit(1);
+    }
 
     // End of header edits
 
@@ -8182,6 +8210,12 @@ stop_fuzzing:
 
     // TODO: figure out
     // TODO: Clean up
+    Py_DECREF(pModule);
+    Py_DECREF(pName);
+    Py_DECREF(pDict);
+    Py_DECREF(p_rnd_veto);
+
+
 
     // Finish the Python Interpreter
     Py_Finalize();
