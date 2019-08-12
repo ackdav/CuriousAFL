@@ -32,6 +32,7 @@
 #include "alloc-inl.h"
 #include "hash.h"
 
+#include <Python.h> // edited
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -75,6 +76,11 @@
 #else
 #  define EXP_ST static
 #endif /* ^AFL_LIB */
+
+/*
+ * TODO: Global variables
+ * */
+
 
 /* Lots of globals, but mostly for the status UI and other things where it
    really makes no sense to haul them around as function parameters. */
@@ -4597,6 +4603,45 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
   write_to_testcase(out_buf, len);
 
+  /*
+    // out_file is file to fuzz which should be input
+    // queue_cur is current offset in queue which should be seed
+    // TODO insert python function diff
+    //TODO: figure out
+
+    if (PyCallable_Check(pFuncDiff) && PyCallable_Check(pFuncIsUseful))
+    {
+        pArgs = PyTuple_New(2);
+        PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
+        PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
+
+        pDiff = PyObject_CallObject(pFuncDiff, pArgs);
+
+        if (pDiff == NULL)
+        {
+            PyErr_Print();
+        }
+
+        pArgs = PyTuple_New(2);
+        PyTuple_SetItem(pArgs, 0, pDiff);
+        PyTuple_SetItem(pArgs, 1, pBytemask);
+
+        pIsUseful = PyObject_CallObject(pFuncIsUseful, pArgs);
+
+        if (pIsUseful != NULL)
+        {
+            if (PyObject_Not(pIsUseful)) return 0;
+        } else
+        {
+            PyErr_Print();
+        }
+    } else
+    {
+        PyErr_Print();
+    }
+*/
+    // End of edits
+
   fault = run_target(argv, exec_tmout);
 
   if (stop_soon) return 1;
@@ -7705,6 +7750,27 @@ static void save_cmdline(u32 argc, char** argv) {
 
 int main(int argc, char** argv) {
 
+    // Edits for augmented afl-fuzz
+
+    Py_Initialize();
+    PyObject *sys = PyImport_ImportModule("sys");
+    PyObject *path = PyObject_GetAttrString(sys, "path");
+    PyList_Append(path, PyUnicode_FromString("."));
+
+    //TODO: Insert func defs
+    /*
+     * // pFuncQueryModel
+      pFuncQueryModel = PyDict_GetItemString(pDict, "query_model");
+      if (!pFuncQueryModel)
+      {
+          PyErr_Print();
+          printf("ERROR in pFuncQueryModel\n");
+          exit(1);
+      }
+     * */
+
+    // End of header edits
+
   s32 opt;
   u64 prev_queued = 0;
   u32 sync_interval_cnt = 0, seek_to;
@@ -8041,6 +8107,27 @@ int main(int argc, char** argv) {
 
     }
 
+    /*
+      // TODO figure out
+
+      if (PyCallable_Check(pFuncQueryModel))
+      {
+          pArgs = PyTuple_New(1);
+          PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(queue_cur->fname));
+
+          pBytemask = PyObject_CallObject(pFuncQueryModel, pArgs);
+
+          if (pBytemask == NULL)
+          {
+              PyErr_Print();
+          }
+      } else
+      {
+          PyErr_Print();
+      }
+
+      // End of edit
+      */
     skipped_fuzz = fuzz_one(use_argv);
 
     if (!stop_soon && sync_id && !skipped_fuzz) {
@@ -8089,6 +8176,17 @@ stop_fuzzing:
   alloc_report();
 
   OKF("We're done here. Have a nice day!\n");
+
+
+    // Edits for augmented afl-fuzz
+
+    // TODO: figure out
+    // TODO: Clean up
+
+    // Finish the Python Interpreter
+    Py_Finalize();
+
+    // End of footer edits
 
   exit(0);
 
