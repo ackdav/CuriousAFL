@@ -4607,12 +4607,24 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
   write_to_testcase(out_buf, len);
 
-  /*
     // out_file is file to fuzz which should be input
     // queue_cur is current offset in queue which should be seed
+
+
+    if (PyCallable_Check(p_rnd_veto)){
+        //pArgs = PyTuple_New(2);
+        //PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
+        //PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
+        //call veto with current seed
+        //pDiff = PyObject_CallObject(p_rnd_veto, queue_cur->fname);
+
+    }
+    else {
+
+    }
+    /*
     // TODO insert python function diff
     //TODO: figure out
-
     if (PyCallable_Check(pFuncDiff) && PyCallable_Check(pFuncIsUseful))
     {
         pArgs = PyTuple_New(2);
