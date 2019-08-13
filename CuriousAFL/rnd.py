@@ -31,7 +31,7 @@ class RND:
     def __init__(self,in_dim,out_dim,n_hid):
         self.target = NN(in_dim,out_dim,n_hid)
         self.model = NN(in_dim,out_dim,n_hid)
-        self.optimizer = torch.optim.Adam(self.model.parameters(),lr=0.0001)
+        self.optimizer = torch.optim.Adam(self.model.parameters(),lr=0.001)
 
     def get_reward(self,x):
         y_true = self.target(x).detach()
