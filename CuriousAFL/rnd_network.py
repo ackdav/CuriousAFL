@@ -18,13 +18,12 @@ max_filesize = 2 ** 14
 learning_rate = 1e-4
 
 rnd_model = None
-buffer_size = 64
+buffer_size = 2**10
 replay_buffer = deque(maxlen=buffer_size)
+batch_size = 2**10
 
 input_dim = max_filesize
-output_dim = 1  # fuzz or don't - 2 possible actions
-
-batch_size = 64  # TODO: WHY?
+output_dim = 2**6  # fuzz or don't - 2 possible actions
 
 step_counter = 0
 
@@ -63,8 +62,12 @@ def rnd_pass(input_file, seed):
         byte_array = np.pad(byte_array, (0, max_filesize - len(byte_array)), 'constant',
                             constant_values=0)
 
+
     state = torch.Tensor(byte_array)
-    reward = rnd_model.get_reward(state).detach().clamp(-1.0, 1.0).item()
+    reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
+
+    if reward > 0.5:
+        return False
 
     global replay_buffer
     replay_buffer.append(byte_array)
