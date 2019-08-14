@@ -83,7 +83,9 @@
 static PyObject *pName,
                 *pModule,
                 *pDict,
-                *p_rnd_veto;
+                *pArgs,
+                *p_rnd_veto,
+                *p_rnd_veto_result;
 
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -4618,6 +4620,19 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
         //call veto with current seed
         //pDiff = PyObject_CallObject(p_rnd_veto, queue_cur->fname);
 
+        pArgs = PyTuple_New(2);
+        PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
+        PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
+
+        p_rnd_veto_result = PyObject_CallObject(p_rnd_veto, pArgs);
+
+        if (p_rnd_veto_result != NULL)
+        {
+            if (PyObject_Not(p_rnd_veto_result)) return 0;
+        } else
+        {
+            PyErr_Print();
+        }
     }
     else {
 
@@ -7801,7 +7816,7 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    p_rnd_veto = PyDict_GetItemString(pDict, "rnd_veto");
+    p_rnd_veto = PyDict_GetItemString(pDict, "rnd_pass");
     if (!p_rnd_veto)
     {
         PyErr_Print();
@@ -8224,8 +8239,10 @@ stop_fuzzing:
     // TODO: Clean up
     Py_DECREF(pModule);
     Py_DECREF(pName);
+    Py_DECREF(pArgs);
     Py_DECREF(pDict);
     Py_DECREF(p_rnd_veto);
+    Py_DECREF(p_rnd_veto_result);
 
 
 
