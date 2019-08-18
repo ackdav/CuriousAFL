@@ -10,28 +10,29 @@ import torch
 import torch.nn
 import torch.nn.functional as F
 import sys
+from statistics import median
 
 # epochs are controlled by AFL
-retrain_every_x_seeds = 10 ** 4
 
-max_filesize = 2 ** 14
+max_filesize = 2**12
 learning_rate = 1e-4
 
 rnd_model = None
 buffer_size = 2**10
+batch_size = 10**3 # neuzz reference
 replay_buffer = deque(maxlen=buffer_size)
-batch_size = 2**10
+reward_buffer = deque(maxlen=int(buffer_size/10))
 
 input_dim = max_filesize
-output_dim = 2**6  # fuzz or don't - 2 possible actions
+output_dim = 1  # fuzz or don't - 2 possible actions
 
 step_counter = 0
-
 
 def init_models():
     global rnd_model
     rnd_model = RND(in_dim=max_filesize, out_dim=1, n_hid=124)
-
+    global reward_buffer
+    reward_buffer.append(len(reward_buffer) * [0.0])
 
 def rnd_pass(input_file, seed):
     """
@@ -39,9 +40,6 @@ def rnd_pass(input_file, seed):
     :param input_file:
     :return: true if seed should be executed
     """
-    orig_stdout = sys.stdout
-    f = open('./out.txt', 'w')
-    sys.stdout = f
 
     if rnd_model is None:
         init_models()
@@ -53,8 +51,8 @@ def rnd_pass(input_file, seed):
     #    update_model()
     #    step_counter = 0
     # convert file into byte-array
-    byte_array = np.fromfile(seed)
-    # byte_array = vectorize
+    byte_array = np.fromfile(seed, 'u1')
+    byte_array = byte_array / 255 # min max normalized
 
     if len(byte_array) > max_filesize:
         byte_array = byte_array[:max_filesize]
@@ -66,11 +64,17 @@ def rnd_pass(input_file, seed):
     state = torch.Tensor(byte_array)
     reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
 
-    if reward > 0.5:
+    global reward_buffer
+    reward_buffer.append(reward)
+    
+    if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer)/4):])):
         return False
 
+
+    # we now execute the seed
     global replay_buffer
     replay_buffer.append(byte_array)
+
 
     if step_counter > batch_size:
         #update model
@@ -86,9 +90,6 @@ def rnd_pass(input_file, seed):
 
         print('updated model')
         step_counter = 0
-
-    sys.stdout = orig_stdout
-    f.close()
 
     return True
 
