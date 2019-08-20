@@ -32,7 +32,13 @@
 #include "alloc-inl.h"
 #include "hash.h"
 
-#include <Python.h> // edited
+//rpc edit
+#include <glib-object.h>
+#include <thrift/c_glib/protocol/thrift_binary_protocol.h>
+#include <thrift/c_glib/transport/thrift_buffered_transport.h>
+#include <thrift/c_glib/transport/thrift_socket.h>
+#include "gen-c_glib/rnd.h"
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -78,14 +84,31 @@
 #endif /* ^AFL_LIB */
 
 /*
- * TODO: Global variables
+ * TODO: fann
  * */
-static PyObject *pName,
-                *pModule,
-                *pDict,
-                *pArgs,
-                *p_rnd_veto,
-                *p_rnd_veto_result;
+const unsigned int input_size = 2 ^ 12;
+const char output_size = 1;
+const char num_layers = 2;
+
+const short retrain_every_x_seed = 10 ^ 3;
+
+const unsigned int num_neurons_hidden = 3;
+const float desired_error = (const float) 0.001;
+
+  ThriftSocket *socket;
+  ThriftTransport *transport;
+  ThriftProtocol *protocol;
+  RndIf *client;
+
+  GError *error = NULL;
+
+  //https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
+  //InvalidOperation *invalid_operation = NULL;
+  //Work *work;
+
+  char pyReturn;
+
+  int exit_status = 0;
 
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -4613,33 +4636,17 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     // queue_cur is current offset in queue which should be seed
 
 
-    if (PyCallable_Check(p_rnd_veto)){
-        //pArgs = PyTuple_New(2);
-        //PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
-        //PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
-        //call veto with current seed
-        //pDiff = PyObject_CallObject(p_rnd_veto, queue_cur->fname);
 
-        pArgs = PyTuple_New(2);
-        PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
-        PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
+    // TODO insert python function diff
+    //TODO:
 
-        p_rnd_veto_result = PyObject_CallObject(p_rnd_veto, pArgs);
-
-        if (p_rnd_veto_result != NULL)
-        {
-            if (PyObject_Not(p_rnd_veto_result)) return 0;
-        } else
-        {
-            PyErr_Print();
+    //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
+    if (rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
+        if (pyReturn == 1){
+            return pyReturn;
         }
     }
-    else {
-
-    }
-    /*
-    // TODO insert python function diff
-    //TODO: figure out
+  /*
     if (PyCallable_Check(pFuncDiff) && PyCallable_Check(pFuncIsUseful))
     {
         pArgs = PyTuple_New(2);
@@ -4671,6 +4678,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
         PyErr_Print();
     }
 */
+
     // End of edits
 
   fault = run_target(argv, exec_tmout);
@@ -7783,46 +7791,33 @@ int main(int argc, char** argv) {
 
     // Edits for augmented afl-fuzz
 
-    Py_Initialize();
-    PyObject *sys = PyImport_ImportModule("sys");
-    PyObject *path = PyObject_GetAttrString(sys, "path");
-    PyList_Append(path, PyUnicode_FromString("."));
+    //TODO: fann
+  #if (!GLIB_CHECK_VERSION (2, 36, 0))
+  g_type_init ();
+  #endif
 
-    //TODO: Insert func defs
-    //build name object for python module
-    pName = PyUnicode_FromString("rnd_network");
-    if (!pName)
-    {
-        PyErr_Print();
-        printf("ERROR in pName\n");
-        exit(1);
-    }
+  socket    = g_object_new (THRIFT_TYPE_SOCKET,
+                            "hostname",  "127.0.0.1",
+                            "port",      6000,
+                            NULL);
+  transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
+                            "transport", socket,
+                            NULL);
+  protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
+                            "transport", transport,
+                            NULL);
 
-    // Load module object
-    pModule = PyImport_Import(pName);
-    if (!pModule)
-    {
-        PyErr_Print();
-        printf("ERROR in pModule\n");
-        exit(1);
-    }
+  thrift_transport_open (transport, &error);
 
-    // pDict is a borrowed reference
-    pDict = PyModule_GetDict(pModule);
-    if (!pDict)
-    {
-        PyErr_Print();
-        printf("ERROR in pDict\n");
-        exit(1);
-    }
+  client = g_object_new (TYPE_RND_CLIENT,
+                         "input_protocol",  protocol,
+                         "output_protocol", protocol,
+                         NULL);
 
-    p_rnd_veto = PyDict_GetItemString(pDict, "rnd_pass");
-    if (!p_rnd_veto)
-    {
-        PyErr_Print();
-        printf("ERROR in pModule\n");
-        exit(1);
-    }
+  // ping for init models
+  if (!error && rnd_if_init_model (client, &pyReturn, &error)) {
+    puts("initModel()");
+  }
 
     // End of header edits
 
@@ -8164,7 +8159,7 @@ int main(int argc, char** argv) {
 
     /*
       // TODO figure out
-
+        // TODO: fann
       if (PyCallable_Check(pFuncQueryModel))
       {
           pArgs = PyTuple_New(1);
@@ -8236,18 +8231,15 @@ stop_fuzzing:
     // Edits for augmented afl-fuzz
 
     // TODO: figure out
-    // TODO: Clean up
-    Py_DECREF(pModule);
-    Py_DECREF(pName);
-    Py_DECREF(pArgs);
-    Py_DECREF(pDict);
-    Py_DECREF(p_rnd_veto);
-    Py_DECREF(p_rnd_veto_result);
+    // TODO: fann
+  thrift_transport_close (transport, NULL);
 
-
+  g_object_unref (client);
+  g_object_unref (protocol);
+  g_object_unref (transport);
+  g_object_unref (socket);
 
     // Finish the Python Interpreter
-    Py_Finalize();
 
     // End of footer edits
 
