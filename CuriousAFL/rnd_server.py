@@ -22,7 +22,6 @@ input_dim = max_filesize
 output_dim = 1  # fuzz or don't - 2 possible actions
 
 step_counter = 0
-rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
 
 
 class NN(torch.nn.Module):
@@ -63,6 +62,9 @@ class RND:
 
 
 class Dispatcher(object):
+    def __init__(self):
+        self.log = {}
+
     def initModel(self):
         try:
             global rnd_model
@@ -70,15 +72,17 @@ class Dispatcher(object):
 
             global reward_buffer
             reward_buffer.append(len(reward_buffer) * [0.0])
+
+            print("model&buffer ready")
             return 0
         except:
-            return 6  # Code for INTERNAL_ERROR
+            return 1
 
     def veto(self, seed):
         """
         main func for AFL to call
         :param seed:
-        :return: true if seed should be executed
+        :return: 0 if seed should be executed, 1 if should be skipped
         """
 
         global step_counter
@@ -104,7 +108,7 @@ class Dispatcher(object):
         reward_buffer.append(reward)
 
         if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer) / 4):])):
-            return False
+            return 1
 
         # we now execute the seed
         global replay_buffer
@@ -115,7 +119,6 @@ class Dispatcher(object):
             num = len(replay_buffer)
             K = np.min([num, batch_size])
             samples = random.sample(replay_buffer, K)
-            print(len(samples))
 
             S0 = torch.tensor(samples, dtype=torch.float)
 
@@ -125,10 +128,11 @@ class Dispatcher(object):
             print('updated model')
             step_counter = 0
 
-        return True
+        return 0
 
 
 if __name__ == '__main__':
-    server = make_server(rnd_thrift.RNDServer, Dispatcher(), '127.0.0.1', 6000)
+    rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
+    server = make_server(rnd_thrift.Rnd, Dispatcher(), '127.0.0.1', 6000, client_timeout=None)
     print("serving...")
     server.serve()
