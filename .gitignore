@@ -2,6 +2,7 @@
 
 test/
 **/.DS_Store
+.idea/
 
 ## Default C Ignore
 
