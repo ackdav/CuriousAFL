@@ -84,15 +84,6 @@
 #endif /* ^AFL_LIB */
 
 //Curious Edit:
-const unsigned int input_size = 2 ^ 12;
-const char output_size = 1;
-const char num_layers = 2;
-
-const short retrain_every_x_seed = 10 ^ 3;
-
-const unsigned int num_neurons_hidden = 3;
-const float desired_error = (const float) 0.001;
-
 // thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
 ThriftSocket *socket;
 ThriftTransport *transport;
