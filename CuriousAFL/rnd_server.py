@@ -11,6 +11,7 @@ import sys
 
 import thriftpy2
 from thriftpy2.rpc import make_server
+from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn
 import torch.nn.functional as F
@@ -28,6 +29,9 @@ replay_buffer = deque(maxlen=BUFFER_SIZE)
 reward_buffer = deque(maxlen=int(BUFFER_SIZE / 10))
 rnd_model = None
 step_counter = 0
+writer = SummaryWriter()
+
+analysis_step_count = 0
 
 
 class NN(torch.nn.Module):
@@ -113,6 +117,11 @@ class Dispatcher(object):
         global replay_buffer
         replay_buffer.append(byte_array)
 
+        if self.args.tensorboard:
+            global analysis_step_count
+            writer.add_scalar('RND reward', reward, analysis_step_count)
+            analysis_step_count += 1
+
         if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer) / 4):])):
             return 1
 
@@ -137,6 +146,9 @@ def main(args):
     rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
     server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', 6000, client_timeout=None)
     print("serving...")
+    if args.tensorboard:
+        print("You wanted Tensorboard (TB) - serverside this activates TB's SummaryWriter. To launch TB on your side, "
+              "run: \ntensorboard --logdir=runs")
     server.serve()
 
 def parse_args():
