@@ -32,7 +32,7 @@
 #include "alloc-inl.h"
 #include "hash.h"
 
-//rpc edit
+//Curious Edit:
 #include <glib-object.h>
 #include <thrift/c_glib/protocol/thrift_binary_protocol.h>
 #include <thrift/c_glib/transport/thrift_buffered_transport.h>
@@ -83,9 +83,7 @@
 #  define EXP_ST static
 #endif /* ^AFL_LIB */
 
-/*
- * TODO: fann
- * */
+//Curious Edit:
 const unsigned int input_size = 2 ^ 12;
 const char output_size = 1;
 const char num_layers = 2;
@@ -95,21 +93,17 @@ const short retrain_every_x_seed = 10 ^ 3;
 const unsigned int num_neurons_hidden = 3;
 const float desired_error = (const float) 0.001;
 
-  ThriftSocket *socket;
-  ThriftTransport *transport;
-  ThriftProtocol *protocol;
-  RndIf *client;
+// thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
+ThriftSocket *socket;
+ThriftTransport *transport;
+ThriftProtocol *protocol;
+RndIf *client;
 
-  GError *error = NULL;
+GError *error = NULL;
 
-  //https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
-  //InvalidOperation *invalid_operation = NULL;
-  //Work *work;
-
-  char pyReturn;
-
-  int exit_status = 0;
-
+char pyReturn;
+int exit_status = 0;
+//Curious
 
 /* Lots of globals, but mostly for the status UI and other things where it
    really makes no sense to haul them around as function parameters. */
@@ -4635,51 +4629,14 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     // out_file is file to fuzz which should be input
     // queue_cur is current offset in queue which should be seed
 
-
-
-    // TODO insert python function diff
-    //TODO:
-
+    //Curious Edit:
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
     if (rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }
     }
-  /*
-    if (PyCallable_Check(pFuncDiff) && PyCallable_Check(pFuncIsUseful))
-    {
-        pArgs = PyTuple_New(2);
-        PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(out_file));
-        PyTuple_SetItem(pArgs, 1, PyUnicode_FromString(queue_cur->fname));
-
-        pDiff = PyObject_CallObject(pFuncDiff, pArgs);
-
-        if (pDiff == NULL)
-        {
-            PyErr_Print();
-        }
-
-        pArgs = PyTuple_New(2);
-        PyTuple_SetItem(pArgs, 0, pDiff);
-        PyTuple_SetItem(pArgs, 1, pBytemask);
-
-        pIsUseful = PyObject_CallObject(pFuncIsUseful, pArgs);
-
-        if (pIsUseful != NULL)
-        {
-            if (PyObject_Not(pIsUseful)) return 0;
-        } else
-        {
-            PyErr_Print();
-        }
-    } else
-    {
-        PyErr_Print();
-    }
-*/
-
-    // End of edits
+    // Curious
 
   fault = run_target(argv, exec_tmout);
 
@@ -8157,27 +8114,7 @@ int main(int argc, char** argv) {
 
     }
 
-    /*
-      // TODO figure out
-        // TODO: fann
-      if (PyCallable_Check(pFuncQueryModel))
-      {
-          pArgs = PyTuple_New(1);
-          PyTuple_SetItem(pArgs, 0, PyUnicode_FromString(queue_cur->fname));
 
-          pBytemask = PyObject_CallObject(pFuncQueryModel, pArgs);
-
-          if (pBytemask == NULL)
-          {
-              PyErr_Print();
-          }
-      } else
-      {
-          PyErr_Print();
-      }
-
-      // End of edit
-      */
     skipped_fuzz = fuzz_one(use_argv);
 
     if (!stop_soon && sync_id && !skipped_fuzz) {
@@ -8228,20 +8165,14 @@ stop_fuzzing:
   OKF("We're done here. Have a nice day!\n");
 
 
-    // Edits for augmented afl-fuzz
-
-    // TODO: figure out
-    // TODO: fann
+  //Curious Edit:
   thrift_transport_close (transport, NULL);
 
   g_object_unref (client);
   g_object_unref (protocol);
   g_object_unref (transport);
   g_object_unref (socket);
-
-    // Finish the Python Interpreter
-
-    // End of footer edits
+  //Curious
 
   exit(0);
 
