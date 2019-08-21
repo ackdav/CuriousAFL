@@ -4622,7 +4622,8 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
     //Curious Edit:
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
-    if (rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
+    //queue_cur->fname
+    if (rnd_if_veto(client, &pyReturn, out_file, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }

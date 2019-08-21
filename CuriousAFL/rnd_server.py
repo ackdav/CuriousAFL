@@ -29,7 +29,7 @@ replay_buffer = deque(maxlen=BUFFER_SIZE)
 reward_buffer = deque(maxlen=int(BUFFER_SIZE / 10))
 rnd_model = None
 step_counter = 0
-writer = SummaryWriter()
+writer = None
 
 analysis_step_count = 0
 
@@ -63,7 +63,7 @@ class RND:
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).mean()
+        reward = torch.pow(y_pred - y_true, 2).sum()
         return reward
 
     def update(self, Ri):
@@ -83,6 +83,10 @@ class Dispatcher(object):
 
             global reward_buffer
             reward_buffer.append(len(reward_buffer) * [0.0])
+
+            if self.args.tensorboard:
+                global writer
+                writer = SummaryWriter()
 
             print("model&buffer ready")
             return 0
@@ -117,7 +121,7 @@ class Dispatcher(object):
         global replay_buffer
         replay_buffer.append(byte_array)
 
-        if self.args.tensorboard:
+        if step_counter % 100 == 0 and self.args.tensorboard:
             global analysis_step_count
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
