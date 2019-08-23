@@ -4622,8 +4622,9 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
     //Curious Edit:
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
-    //queue_cur->fname
-    if (rnd_if_veto(client, &pyReturn, out_file, &error)) {
+    //
+    //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
+    if (rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }

@@ -3,7 +3,7 @@
 test/
 **/.DS_Store
 .idea/
-
+afl-fuzz
 ## Default C Ignore
 
 # Prerequisites
