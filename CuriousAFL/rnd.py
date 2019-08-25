@@ -36,7 +36,7 @@ class RND:
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).mean()
+        reward = torch.pow(y_pred - y_true, 2).sum()
         return reward
 
     def update(self, Ri):

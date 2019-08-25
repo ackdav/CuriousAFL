@@ -4624,7 +4624,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
     //
     //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
-    if (rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
+    if (rnd_if_veto(client, &pyReturn, out_file, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }
@@ -7831,7 +7831,7 @@ int main(int argc, char** argv) {
 
         break;
 
-      case 'S': 
+      case 'S':
 
         if (sync_id) FATAL("Multiple -S or -M options not supported");
         sync_id = ck_strdup(optarg);
@@ -8111,7 +8111,7 @@ int main(int argc, char** argv) {
     skipped_fuzz = fuzz_one(use_argv);
 
     if (!stop_soon && sync_id && !skipped_fuzz) {
-      
+
       if (!(sync_interval_cnt++ % SYNC_INTERVAL))
         sync_fuzzers(use_argv);
 

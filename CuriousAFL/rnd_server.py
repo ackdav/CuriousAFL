@@ -104,7 +104,7 @@ class Dispatcher(object):
         step_counter += 1
 
         byte_array = np.fromfile(seed, 'u1')
-        byte_array = byte_array / 255  # min max normalized
+        byte_array = np.unpackbits(byte_array) # min max normalized
 
         if len(byte_array) > MAX_FILESIZE:
             byte_array = byte_array[:MAX_FILESIZE]
@@ -126,7 +126,7 @@ class Dispatcher(object):
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
 
-        if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer) / 4):])):
+        if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer)):])):
             return 1
 
         if step_counter > BATCH_SIZE:
