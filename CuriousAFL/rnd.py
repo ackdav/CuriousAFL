@@ -29,14 +29,14 @@ class NN(torch.nn.Module):
 
 class RND:
     def __init__(self, in_dim, out_dim, n_hid):
-        self.target = NN(in_dim, out_dim, n_hid)
-        self.model = NN(in_dim, out_dim, n_hid)
+        self.target = NN(in_dim, out_dim, n_hid).to(device='cuda:0')
+        self.model = NN(in_dim, out_dim, n_hid).to(device='cuda:0')
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).sum()
+        reward = torch.pow(y_pred - y_true, 2).mean()
         return reward
 
     def update(self, Ri):

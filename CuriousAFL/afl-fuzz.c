@@ -7739,38 +7739,6 @@ static void save_cmdline(u32 argc, char** argv) {
 
 int main(int argc, char** argv) {
 
-    // Edits for augmented afl-fuzz
-
-    //TODO: fann
-  #if (!GLIB_CHECK_VERSION (2, 36, 0))
-  g_type_init ();
-  #endif
-
-  socket    = g_object_new (THRIFT_TYPE_SOCKET,
-                            "hostname",  "127.0.0.1",
-                            "port",      6000,
-                            NULL);
-  transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
-                            "transport", socket,
-                            NULL);
-  protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
-                            "transport", transport,
-                            NULL);
-
-  thrift_transport_open (transport, &error);
-
-  client = g_object_new (TYPE_RND_CLIENT,
-                         "input_protocol",  protocol,
-                         "output_protocol", protocol,
-                         NULL);
-
-  // ping for init models
-  if (!error && rnd_if_init_model (client, &pyReturn, &error)) {
-    puts("initModel()");
-  }
-
-    // End of header edits
-
   s32 opt;
   u64 prev_queued = 0;
   u32 sync_interval_cnt = 0, seek_to;
@@ -7789,7 +7757,7 @@ int main(int argc, char** argv) {
   gettimeofday(&tv, &tz);
   srandom(tv.tv_sec ^ tv.tv_usec ^ getpid());
 
-  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:Q")) > 0)
+  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:P:Q")) > 0)
 
     switch (opt) {
 
@@ -7948,6 +7916,37 @@ int main(int argc, char** argv) {
         use_banner = optarg;
         break;
 
+        case 'P':
+            // Edits for augmented afl-fuzz
+#if (!GLIB_CHECK_VERSION (2, 36, 0))
+            g_type_init ();
+#endif
+
+            socket    = g_object_new (THRIFT_TYPE_SOCKET,
+                                      "hostname",  "127.0.0.1",
+                                      "port",      atoi(optarg),
+                                      NULL);
+            transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
+                                      "transport", socket,
+                                      NULL);
+            protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
+                                      "transport", transport,
+                                      NULL);
+
+            thrift_transport_open (transport, &error);
+
+            client = g_object_new (TYPE_RND_CLIENT,
+                                   "input_protocol",  protocol,
+                                   "output_protocol", protocol,
+                                   NULL);
+
+            // ping for init models
+            if (!error && rnd_if_init_model (client, &pyReturn, &error)) {
+                puts("initModel()");
+            }
+
+            // End of header edits
+            break;
       case 'Q': /* QEMU mode */
 
         if (qemu_mode) FATAL("Multiple -Q options not supported");
@@ -7957,7 +7956,7 @@ int main(int argc, char** argv) {
 
         break;
 
-      default:
+        default:
 
         usage(argv[0]);
 

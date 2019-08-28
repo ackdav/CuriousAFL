@@ -24,13 +24,12 @@ BATCH_SIZE = 10 ** 4  # update reference model after X executions
 INPUT_DIM = MAX_FILESIZE  # input dimension of RND
 OUTPUT_DIM = 1  # output dimension of RND
 
-
-replay_buffer = deque(maxlen=BUFFER_SIZE)
-reward_buffer = deque(maxlen=int(BUFFER_SIZE / 10))
+replay_buffer = deque(maxlen=int(BUFFER_SIZE/2))
+reward_buffer = deque(maxlen=int(BUFFER_SIZE / 5))
 rnd_model = None
 step_counter = 0
 writer = None
-
+device = None  # pytorch device
 analysis_step_count = 0
 
 
@@ -56,14 +55,14 @@ class NN(torch.nn.Module):
 
 class RND:
     def __init__(self, in_dim, out_dim, n_hid, lr):
-        self.target = NN(in_dim, out_dim, n_hid)
-        self.model = NN(in_dim, out_dim, n_hid)
+        self.target = NN(in_dim, out_dim, n_hid).to(device=device)
+        self.model = NN(in_dim, out_dim, n_hid).to(device=device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).sum()
+        reward = torch.pow(y_pred - y_true, 2).mean()
         return reward
 
     def update(self, Ri):
@@ -79,6 +78,7 @@ class Dispatcher(object):
     def initModel(self):
         try:
             global rnd_model
+            print("init rnd")
             rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=1, n_hid=124, lr=self.args.learningrate)
 
             global reward_buffer
@@ -103,8 +103,8 @@ class Dispatcher(object):
         global step_counter
         step_counter += 1
 
-        byte_array = np.fromfile(seed, 'u1')
-        byte_array = np.unpackbits(byte_array) # min max normalized
+        byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
+        byte_array = np.unpackbits(byte_array)  # min max normalized
 
         if len(byte_array) > MAX_FILESIZE:
             byte_array = byte_array[:MAX_FILESIZE]
@@ -112,7 +112,7 @@ class Dispatcher(object):
             byte_array = np.pad(byte_array, (0, MAX_FILESIZE - len(byte_array)), 'constant',
                                 constant_values=0)
 
-        state = torch.Tensor(byte_array)
+        state = torch.tensor(byte_array, dtype=torch.float, device=device)
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
 
         global reward_buffer
@@ -126,16 +126,16 @@ class Dispatcher(object):
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
 
-        if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer)):])):
+        if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer) / 4):])):
             return 1
 
-        if step_counter > BATCH_SIZE:
+        if step_counter > BATCH_SIZE/2:
             # update model
             num = len(replay_buffer)
             K = np.min([num, BATCH_SIZE])
             samples = random.sample(replay_buffer, K)
 
-            S0 = torch.tensor(samples, dtype=torch.float)
+            S0 = torch.tensor(samples, dtype=torch.float, device=device)
 
             Ri = rnd_model.get_reward(S0)
             rnd_model.update(Ri)
@@ -146,23 +146,49 @@ class Dispatcher(object):
         return 0
 
 
+def get_open_port():
+    # This is very ugly, don't copy this, don't look at this, forget this was ever here
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("", 0))
+    s.listen(1)
+    port = s.getsockname()[1]
+    s.close()
+    print("Using: " + str(port))
+    return port
+
+
 def main(args):
     rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
-    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', 6000, client_timeout=None)
+    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', get_open_port(), client_timeout=None)
     print("serving...")
+
+    global device
+    if not args.disable_cuda and torch.cuda.is_available():
+        device = torch.device('cuda:0')
+        print("found cuda device...")
+    else:
+        device = torch.device('cpu')
+
     if args.tensorboard:
         print("You wanted Tensorboard (TB) - serverside this activates TB's SummaryWriter. To launch TB on your side, "
               "run: \ntensorboard --logdir=runs")
     server.serve()
 
+
 def parse_args():
     """Parse command line arguments.
     Returns:
-      Parsed arguement object.
+      Parsed argument object.
     """
     parser = argparse.ArgumentParser(description="Launching RND Network as a Thrift RPC")
     parser.add_argument(
+        '--projectbase',
+        help='update model after x executions',
+        default='.')
+    parser.add_argument(
         '--tensorboard', help='launch Tensorboard to monitor curiosity values', type=bool, default=False)
+    parser.add_argument('--disable-cuda', type=bool, default=False, help='Disable CUDA')
     parser.add_argument(
         '--batchsize',
         help='update model after x executions',
