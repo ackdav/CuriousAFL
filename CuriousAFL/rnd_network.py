@@ -80,7 +80,7 @@ def rnd_pass(input_file, seed):
         #update model
         num = len(replay_buffer)
         K = np.min([num, batch_size])
-        samples = random.sample(replay_buffer, K)
+        samples = np.array(random.sample(replay_buffer, K))
         print(len(samples))
 
         S0 = torch.tensor(samples, dtype=torch.float)

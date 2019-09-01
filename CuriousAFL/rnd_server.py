@@ -81,9 +81,6 @@ class Dispatcher(object):
             print("init rnd")
             rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=1, n_hid=124, lr=self.args.learningrate)
 
-            global reward_buffer
-            reward_buffer.append(len(reward_buffer) * [0.0])
-
             if self.args.tensorboard:
                 global writer
                 writer = SummaryWriter()
@@ -104,7 +101,9 @@ class Dispatcher(object):
         step_counter += 1
 
         byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
-        byte_array = np.unpackbits(byte_array)  # min max normalized
+        byte_array = byte_array / 255
+
+        #byte_array = np.unpackbits(byte_array)  # min max normalized
 
         if len(byte_array) > MAX_FILESIZE:
             byte_array = byte_array[:MAX_FILESIZE]
@@ -113,27 +112,30 @@ class Dispatcher(object):
                                 constant_values=0)
 
         state = torch.tensor(byte_array, dtype=torch.float, device=device)
+
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
-
-        global reward_buffer
-        reward_buffer.append(reward)
-
-        global replay_buffer
-        replay_buffer.append(byte_array)
 
         if step_counter % 100 == 0 and self.args.tensorboard:
             global analysis_step_count
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
 
-        if len(reward_buffer) < 10 or (reward < median(list(reward_buffer)[-int(len(reward_buffer) / 4):])):
+        global reward_buffer
+        reward_buffer.append(reward)
+
+        if len(reward_buffer) > 100 and \
+                reward < np.percentile(list(reward_buffer), [50])[0]:
+                #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 
-        if step_counter > BATCH_SIZE/2:
+        global replay_buffer
+        replay_buffer.append(byte_array)
+
+        if step_counter > BATCH_SIZE/3:
             # update model
             num = len(replay_buffer)
             K = np.min([num, BATCH_SIZE])
-            samples = random.sample(replay_buffer, K)
+            samples = np.array(random.sample(replay_buffer, K))
 
             S0 = torch.tensor(samples, dtype=torch.float, device=device)
 
