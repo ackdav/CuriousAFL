@@ -24,8 +24,8 @@ BATCH_SIZE = 10 ** 4  # update reference model after X executions
 INPUT_DIM = MAX_FILESIZE  # input dimension of RND
 OUTPUT_DIM = 1  # output dimension of RND
 
-replay_buffer = deque(maxlen=int(BUFFER_SIZE/2))
-reward_buffer = deque(maxlen=int(BUFFER_SIZE / 5))
+replay_buffer = deque(maxlen=int(BUFFER_SIZE))
+reward_buffer = deque(maxlen=int(BUFFER_SIZE/5))
 rnd_model = None
 step_counter = 0
 writer = None
@@ -111,11 +111,11 @@ class Dispatcher(object):
             byte_array = np.pad(byte_array, (0, MAX_FILESIZE - len(byte_array)), 'constant',
                                 constant_values=0)
 
-        state = torch.tensor(byte_array, dtype=torch.float, device=device)
+        state = torch.tensor(byte_array, dtype=torch.float).to(device=device)
 
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
 
-        if step_counter % 100 == 0 and self.args.tensorboard:
+        if step_counter % 1000 == 0 and self.args.tensorboard:
             global analysis_step_count
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
@@ -124,25 +124,25 @@ class Dispatcher(object):
         reward_buffer.append(reward)
 
         if len(reward_buffer) > 100 and \
-                reward < np.percentile(list(reward_buffer), [50])[0]:
+                reward < np.percentile(np.array(reward_buffer), [50])[0]:
                 #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 
         global replay_buffer
         replay_buffer.append(byte_array)
 
-        if step_counter > BATCH_SIZE/3:
-            # update model
+        if step_counter > 1000:
+            #update model
+            replay_buffer_l = np.array(replay_buffer)
             num = len(replay_buffer)
             K = np.min([num, BATCH_SIZE])
-            samples = np.array(random.sample(replay_buffer, K))
-
-            S0 = torch.tensor(samples, dtype=torch.float, device=device)
-
+            #samples = np.array(random.sample(replay_buffer, K))
+            samples = replay_buffer_l[np.random.choice(replay_buffer_l.shape[0], K, replace=False)]
+            S0 = torch.tensor(samples, dtype=torch.float).to(device=device)
             Ri = rnd_model.get_reward(S0)
             rnd_model.update(Ri)
-
-            print('updated model')
+            #pool.apply(self.update_model)
+            #print('updated model')
             step_counter = 0
 
         return 0
