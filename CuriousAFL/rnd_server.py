@@ -125,7 +125,7 @@ class Dispatcher(object):
 
         if len(reward_buffer) > 100 and \
                 reward < np.percentile(np.array(reward_buffer), [50])[0]:
-                #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
+            #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 
         global replay_buffer
@@ -150,6 +150,7 @@ class Dispatcher(object):
 
 def get_open_port():
     # This is very ugly, don't copy this, don't look at this, forget this was ever here
+    # it serves as a backup, if user doesn't provide a port. It has a race condition and is generally ugly. Just don't.
     import socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(("", 0))
@@ -162,8 +163,8 @@ def get_open_port():
 
 def main(args):
     rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
-    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', get_open_port(), client_timeout=None)
-    print("serving...")
+    print("serving...on: " + str(args.port))
+    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', args.port, client_timeout=None)
 
     global device
     if not args.disable_cuda and torch.cuda.is_available():
@@ -208,6 +209,11 @@ def parse_args():
         '--outputdim',
         help='Controls output dim of RND.',
         default=OUTPUT_DIM)
+    parser.add_argument(
+        '--port',
+        help='On which port to communicate with AFL.',
+        default=get_open_port,
+        type=int)
     return parser.parse_args()
 
 
