@@ -37,7 +37,7 @@
 #include <thrift/c_glib/protocol/thrift_binary_protocol.h>
 #include <thrift/c_glib/transport/thrift_buffered_transport.h>
 #include <thrift/c_glib/transport/thrift_socket.h>
-#include "gen-c_glib/rnd.h"
+#include "gen-c_glib/rnd_service.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -88,7 +88,7 @@
 ThriftSocket *socket;
 ThriftTransport *transport;
 ThriftProtocol *protocol;
-RndIf *client;
+RndServiceIf *client;
 
 GError *error = NULL;
 
@@ -4624,7 +4624,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
     //
     //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
-    if (rnd_if_veto(client, &pyReturn, out_file, &error)) {
+    if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }
@@ -7935,13 +7935,13 @@ int main(int argc, char** argv) {
 
             thrift_transport_open (transport, &error);
 
-            client = g_object_new (TYPE_RND_CLIENT,
+            client = g_object_new (TYPE_RND_SERVICE_CLIENT,
                                    "input_protocol",  protocol,
                                    "output_protocol", protocol,
                                    NULL);
 
             // ping for init models
-            if (!error && rnd_if_init_model (client, &pyReturn, &error)) {
+            if (!error && rnd_service_if_init_model (client, &pyReturn, &error)) {
                 puts("initModel()");
             }
 

@@ -8,7 +8,6 @@ import numpy as np
 import argparse
 import random
 import sys
-
 import thriftpy2
 from thriftpy2.rpc import make_server
 from torch.utils.tensorboard import SummaryWriter
@@ -24,7 +23,7 @@ BATCH_SIZE = 10 ** 4  # update reference model after X executions
 INPUT_DIM = MAX_FILESIZE  # input dimension of RND
 OUTPUT_DIM = 1  # output dimension of RND
 
-replay_buffer = deque(maxlen=int(BUFFER_SIZE))
+replay_buffer = deque(maxlen=int(BUFFER_SIZE/5))
 reward_buffer = deque(maxlen=int(BUFFER_SIZE/5))
 rnd_model = None
 step_counter = 0
@@ -32,6 +31,10 @@ writer = None
 device = None  # pytorch device
 analysis_step_count = 0
 
+from thrift.transport import TSocket
+from thrift.transport import TTransport
+from thrift.protocol import TBinaryProtocol
+from thrift.server import TServer
 
 class NN(torch.nn.Module):
     def __init__(self, in_dim, out_dim, n_hid):
@@ -128,8 +131,9 @@ class Dispatcher(object):
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 
-        global replay_buffer
-        replay_buffer.append(byte_array)
+        if np.random.random(1)[0] > 0.75:
+            global replay_buffer
+            replay_buffer.append(byte_array)
 
         if step_counter > 1000:
             #update model
@@ -164,7 +168,7 @@ def get_open_port():
 def main(args):
     rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
     print("serving...on: " + str(args.port))
-    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', args.port, client_timeout=None)
+    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', args.port(), client_timeout=None)
 
     global device
     if not args.disable_cuda and torch.cuda.is_available():
