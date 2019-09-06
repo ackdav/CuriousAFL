@@ -39,7 +39,7 @@ CFLAGS+=$(shell pkg-config --cflags $(PKGS))
 LDFLAGS+=$(shell pkg-config --libs $(PKGS))
 
 ifneq "$(filter Linux GNU%,$(shell uname))" ""
-  LDFLAGS  += -ldl
+  LDFLAGS  += -ldl -lzmq
 endif
 
 ifeq "$(findstring clang, $(shell $(CC) --version 2>/dev/null))" ""
@@ -48,7 +48,7 @@ else
   TEST_CC   = afl-clang
 endif
 
-COMM_HDR    = alloc-inl.h config.h debug.h types.h
+COMM_HDR    = alloc-inl.h config.h debug.h types.h zhelpers.h
 
 all: test_x86 $(PROGS) afl-as test_build all_done
 
@@ -76,7 +76,7 @@ afl-as: afl-as.c afl-as.h $(COMM_HDR) | test_x86
 	ln -sf afl-as as
 
 afl-fuzz: afl-fuzz.c $(COMM_HDR) | test_x86
-	$(CC) $(CFLAGS) $@.c gen-c_glib/rnd.c gen-c_glib/rnd_types.c -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $@.c gen-c_glib/rnd_service.c gen-c_glib/rnd_server_types.c -o $@ $(LDFLAGS)
 
 afl-showmap: afl-showmap.c $(COMM_HDR) | test_x86
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
