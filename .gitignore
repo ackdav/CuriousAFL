@@ -4,6 +4,7 @@ test/
 **/.DS_Store
 .idea/
 afl-fuzz
+Notebooks/*.png
 ## Default C Ignore
 
 # Prerequisites
