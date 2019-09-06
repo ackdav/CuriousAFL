@@ -7922,8 +7922,9 @@ int main(int argc, char** argv) {
             //char *server = "tcp://127.0.0.1:" + optarg;
             //puts(strcat2("tcp://127.0.0.1:", optarg));
             zmq_connect (requester, "tcp://127.0.0.1:44444");
-            zmq_send(requester, "init", 5, 0);
-
+            zmq_send(requester, "init", 4, 0);
+            char buffer [1];
+            zmq_recv (requester, buffer, 1, 0);
             // End of header edits
             break;
       case 'Q': /* QEMU mode */

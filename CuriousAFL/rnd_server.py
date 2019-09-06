@@ -181,14 +181,12 @@ def main(args):
         
     while True:
         message = socket.recv()
-
-        print("Received request: %s" % message)
         
-        if message == "init":
-            dispatcher.initModel()
+        if message == b'init':
+            veto = dispatcher.initModel()
         else:
-            veto = dispatcher.veto(message)
-        socket.send(veto)
+            veto = dispatcher.veto(message.decode("utf-8"))
+        socket.send(bytes(veto))
 
 
 def parse_args():
