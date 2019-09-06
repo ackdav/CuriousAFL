@@ -34,6 +34,7 @@
 
 //Curious Edit:
 #include <zmq.h>
+#include "zhelpers.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -83,7 +84,7 @@
 // thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
 
 char pyReturn;
-char return_buffer[1];
+char pyReturn_buffer[1];
 void *context, *requester;
 int strcat2(char *s,char *t){
    for(;*s!='\0';s++){
@@ -4623,12 +4624,15 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
     //
     //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
-    char buffer [1];
-    zmq_send(requester, out_file,  strlen(out_file), 0);
-    zmq_recv (requester, buffer, 1, 0);
-    if (buffer[0]==1){
+    //zmq_send(requester, out_file,  strlen(out_file), 0);
+
+    s_send (requester, out_file);
+    char *string = s_recv (requester);
+    if (strcmp(string,"skip")==0){
         return 1;
     }
+    free(string);
+
     // Curious
 
   fault = run_target(argv, exec_tmout);
@@ -7921,10 +7925,16 @@ int main(int argc, char** argv) {
             requester = zmq_socket(context, ZMQ_REQ);
             //char *server = "tcp://127.0.0.1:" + optarg;
             //puts(strcat2("tcp://127.0.0.1:", optarg));
-            zmq_connect (requester, "tcp://127.0.0.1:44444");
-            zmq_send(requester, "init", 4, 0);
-            char buffer [1];
-            zmq_recv (requester, buffer, 1, 0);
+            char socket_address[30];
+            strcat(socket_address,"tcp://127.0.0.1:");
+            strcat(socket_address, optarg);
+            zmq_connect (requester, socket_address);
+            //zmq_send(requester, "init", 4, 0);
+            s_send (requester, "init");
+            char *string = s_recv (requester);
+            free(string);
+            //zmq_recv (requester, pyReturn_buffer, 1, 0);
+            //puts(strndup (pyReturn_buffer, sizeof(pyReturn_buffer) - 1));
             // End of header edits
             break;
       case 'Q': /* QEMU mode */

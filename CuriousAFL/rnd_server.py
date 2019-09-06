@@ -124,7 +124,7 @@ class Dispatcher(object):
         if len(reward_buffer) > 100 and \
                 reward < np.percentile(np.array(reward_buffer), [50])[0]:
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
-            return 1
+            return "skip"
 
         if np.random.random(1)[0] > 0.75:
             global replay_buffer
@@ -144,7 +144,7 @@ class Dispatcher(object):
             #print('updated model')
             step_counter = 0
 
-        return 0
+        return "ok"
 
 
 def get_open_port():
@@ -181,12 +181,12 @@ def main(args):
         
     while True:
         message = socket.recv()
-        
         if message == b'init':
             veto = dispatcher.initModel()
         else:
             veto = dispatcher.veto(message.decode("utf-8"))
-        socket.send(bytes(veto))
+            
+        socket.send(bytes(str(veto), encoding='utf-8'))
 
 
 def parse_args():
