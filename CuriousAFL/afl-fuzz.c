@@ -33,11 +33,7 @@
 #include "hash.h"
 
 //Curious Edit:
-#include <glib-object.h>
-#include <thrift/c_glib/protocol/thrift_binary_protocol.h>
-#include <thrift/c_glib/transport/thrift_buffered_transport.h>
-#include <thrift/c_glib/transport/thrift_socket.h>
-#include "gen-c_glib/rnd_service.h"
+#include <zmq.h>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -85,15 +81,18 @@
 
 //Curious Edit:
 // thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
-ThriftSocket *socket;
-ThriftTransport *transport;
-ThriftProtocol *protocol;
-RndServiceIf *client;
-
-GError *error = NULL;
 
 char pyReturn;
-int exit_status = 0;
+char return_buffer[1];
+void *context, *requester;
+int strcat2(char *s,char *t){
+   for(;*s!='\0';s++){
+   }
+   while((*s++ = *t++)!='\0'){
+   }
+   t='\0';
+   return 0;
+}
 //Curious
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -4624,10 +4623,11 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
     //
     //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
-    if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
-        if (pyReturn == 1){
-            return pyReturn;
-        }
+    char buffer [1];
+    zmq_send(requester, out_file,  strlen(out_file), 0);
+    zmq_recv (requester, buffer, 1, 0);
+    if (buffer[0]==1){
+        return 1;
     }
     // Curious
 
@@ -7916,34 +7916,13 @@ int main(int argc, char** argv) {
         use_banner = optarg;
         break;
 
-        case 'P':
-            // Edits for augmented afl-fuzz
-#if (!GLIB_CHECK_VERSION (2, 36, 0))
-            g_type_init ();
-#endif
-
-            socket    = g_object_new (THRIFT_TYPE_SOCKET,
-                                      "hostname",  "127.0.0.1",
-                                      "port",      atoi(optarg),
-                                      NULL);
-            transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
-                                      "transport", socket,
-                                      NULL);
-            protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
-                                      "transport", transport,
-                                      NULL);
-
-            thrift_transport_open (transport, &error);
-
-            client = g_object_new (TYPE_RND_SERVICE_CLIENT,
-                                   "input_protocol",  protocol,
-                                   "output_protocol", protocol,
-                                   NULL);
-
-            // ping for init models
-            if (!error && rnd_service_if_init_model (client, &pyReturn, &error)) {
-                puts("initModel()");
-            }
+      case 'P':
+            context = zmq_ctx_new();
+            requester = zmq_socket(context, ZMQ_REQ);
+            //char *server = "tcp://127.0.0.1:" + optarg;
+            //puts(strcat2("tcp://127.0.0.1:", optarg));
+            zmq_connect (requester, "tcp://127.0.0.1:44444");
+            zmq_send(requester, "init", 5, 0);
 
             // End of header edits
             break;
@@ -8158,12 +8137,8 @@ stop_fuzzing:
 
 
   //Curious Edit:
-  thrift_transport_close (transport, NULL);
-
-  g_object_unref (client);
-  g_object_unref (protocol);
-  g_object_unref (transport);
-  g_object_unref (socket);
+  zmq_close (requester);
+  zmq_ctx_destroy (context);
   //Curious
 
   exit(0);

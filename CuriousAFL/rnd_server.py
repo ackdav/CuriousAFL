@@ -8,8 +8,7 @@ import numpy as np
 import argparse
 import random
 import sys
-import thriftpy2
-from thriftpy2.rpc import make_server
+import zmq
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn
@@ -31,10 +30,6 @@ writer = None
 device = None  # pytorch device
 analysis_step_count = 0
 
-from thrift.transport import TSocket
-from thrift.transport import TTransport
-from thrift.protocol import TBinaryProtocol
-from thrift.server import TServer
 
 class NN(torch.nn.Module):
     def __init__(self, in_dim, out_dim, n_hid):
@@ -166,9 +161,9 @@ def get_open_port():
 
 
 def main(args):
-    rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
-    print("serving...on: " + str(args.port))
-    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', args.port(), client_timeout=None)
+    context = zmq.Context()
+    socket = context.socket(zmq.REP)
+    socket.bind("tcp://127.0.0.1:"+str(args.port))
 
     global device
     if not args.disable_cuda and torch.cuda.is_available():
@@ -180,7 +175,20 @@ def main(args):
     if args.tensorboard:
         print("You wanted Tensorboard (TB) - serverside this activates TB's SummaryWriter. To launch TB on your side, "
               "run: \ntensorboard --logdir=runs")
-    server.serve()
+
+    dispatcher = Dispatcher(args)
+    veto = 1
+        
+    while True:
+        message = socket.recv()
+
+        print("Received request: %s" % message)
+        
+        if message == "init":
+            dispatcher.initModel()
+        else:
+            veto = dispatcher.veto(message)
+        socket.send(veto)
 
 
 def parse_args():
