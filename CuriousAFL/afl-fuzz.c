@@ -7928,7 +7928,9 @@ int main(int argc, char** argv) {
             char socket_address[30];
             strcat(socket_address,"tcp://127.0.0.1:");
             strcat(socket_address, optarg);
-            zmq_connect (requester, socket_address);
+            puts(optarg);
+            puts(socket_address);
+            zmq_connect (requester, "tcp://127.0.0.1:44444");
             //zmq_send(requester, "init", 4, 0);
             s_send (requester, "init");
             char *string = s_recv (requester);

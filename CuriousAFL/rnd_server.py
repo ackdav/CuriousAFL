@@ -20,7 +20,7 @@ LEARNING_RATE = 1e-4
 BUFFER_SIZE = 2 ** 10  # how many seeds to keep in memory
 BATCH_SIZE = 10 ** 4  # update reference model after X executions
 INPUT_DIM = MAX_FILESIZE  # input dimension of RND
-OUTPUT_DIM = 1  # output dimension of RND
+OUTPUT_DIM = 2 ** 6  # output dimension of RND
 
 replay_buffer = deque(maxlen=int(BUFFER_SIZE/5))
 reward_buffer = deque(maxlen=int(BUFFER_SIZE/5))
@@ -38,7 +38,7 @@ class NN(torch.nn.Module):
         self.out_dim = out_dim
         self.n_hid = n_hid
 
-        self.fc1 = torch.nn.Linear(in_dim, n_hid, 'linear')
+        self.fc1 = torch.nn.Linear(in_dim, n_hid, 'relu')
         self.fc2 = torch.nn.Linear(n_hid, n_hid, 'linear')
         self.fc3 = torch.nn.Linear(n_hid, out_dim, 'linear')
         self.softmax = torch.nn.Softmax(dim=1)
@@ -77,7 +77,7 @@ class Dispatcher(object):
         try:
             global rnd_model
             print("init rnd")
-            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=1, n_hid=124, lr=self.args.learningrate)
+            rnd_model = RND(in_dim=INPUT_DIM, out_dim=OUTPUT_DIM, n_hid=2**8, lr=self.args.learningrate)
 
             if self.args.tensorboard:
                 global writer
