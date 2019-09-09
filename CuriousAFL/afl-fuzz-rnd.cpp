@@ -1,16 +1,11 @@
 //
 //
 //
-
-extern "C" void f(int);
-int vote_seed(const seed){
-    return 1
-}
+#include "afl-fuzz-rnd.h"
+#include <string>
+//#include <torch/torch.h>
 
 /*
-#include "afl-fuzz-rnd.h"
-#include <torch/torch.h>
-
 struct NN  : torch::nn::Module {
     NN() {
         // construct and register your layers
@@ -29,19 +24,45 @@ struct NN  : torch::nn::Module {
         // return the output
         return X;
     }
-    torch::nn::Linear in{nullptr},h{nullptr},out{nullptr};
+    //torch::nn::Linear in{nullptr},h{nullptr},out{nullptr};
 };
-
-class RND {
-    NN target
-    NN model
+*/
+class RND {/*
+    NN target;
+    NN model;
     torch::optim::Adam optim(model->parameters(), torch::optim::AdamOptions(1e-3));
-
-    int vote_seed(const seed){
+*/
+    int veto_seed(const seed){
         return 1
+    }
+    void init_model(){
+
     }
     //auto out = model.forward(in);
 };
+
+// access functions
+EXPORT_C RND* RND_new(void)
+{
+    return new RND();
+}
+
+EXPORT_C void RND_delete(RND* this)
+{
+    delete this;
+}
+
+EXPORT_C int RND_init_model(RND* this)
+{
+    return this->init_model();
+}
+
+EXPORT_C int RND_veto_seed(RND* this, std::string seed)
+{
+    return this->veto_seed(std::string seed);
+}
+/*
+
 
 extern "C" int call_C_veto(RND* p, string seed){
     return p->vote_seed(i);
