@@ -34,9 +34,9 @@ CFLAGS     += -Wall -D_FORTIFY_SOURCE=2 -g -Wno-pointer-sign \
 
 # https://stackoverflow.com/questions/43083483/met-undefined-reference-when-use-glib-in-ubuntu
 # include glib in compilation for Thrift
-PKGS=glib-2.0 gobject-2.0 thrift_c_glib
-CFLAGS+=$(shell pkg-config --cflags $(PKGS))
-LDFLAGS+=$(shell pkg-config --libs $(PKGS))
+#PKGS=glib-2.0 gobject-2.0 thrift_c_glib
+#CFLAGS+=$(shell pkg-config --cflags $(PKGS))
+#LDFLAGS+=$(shell pkg-config --libs $(PKGS))
 
 ifneq "$(filter Linux GNU%,$(shell uname))" ""
   LDFLAGS  += -ldl
@@ -76,7 +76,7 @@ afl-as: afl-as.c afl-as.h $(COMM_HDR) | test_x86
 	ln -sf afl-as as
 
 afl-fuzz: afl-fuzz.c $(COMM_HDR) | test_x86
-	$(CC) $(CFLAGS) $@.c gen-c_glib/rnd.c gen-c_glib/rnd_types.c -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
 
 afl-showmap: afl-showmap.c $(COMM_HDR) | test_x86
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
