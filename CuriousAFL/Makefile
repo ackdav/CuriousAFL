@@ -48,7 +48,7 @@ else
   TEST_CC   = afl-clang
 endif
 
-COMM_HDR    = alloc-inl.h config.h debug.h types.h
+COMM_HDR    = alloc-inl.h config.h debug.h types.h afl-fuzz-rnd.h
 
 all: test_x86 $(PROGS) afl-as test_build all_done
 
@@ -75,8 +75,10 @@ afl-as: afl-as.c afl-as.h $(COMM_HDR) | test_x86
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
 	ln -sf afl-as as
 
+afl-fuzz-rnd: bash -c " gcc -o afl-fuzz-rnd afl-fuzz-rnd.cpp -c"
+
 afl-fuzz: afl-fuzz.c $(COMM_HDR) | test_x86
-	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) afl-fuzz-rnd
 
 afl-showmap: afl-showmap.c $(COMM_HDR) | test_x86
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
