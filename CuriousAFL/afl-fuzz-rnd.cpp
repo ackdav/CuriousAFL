@@ -92,11 +92,11 @@ EXPORT_C RND* RND_new(void)
     return new RND();
 }
 
-/*
-EXPORT_C void RND_delete(RND* this)
+
+EXPORT_C void RND_delete(RND* rnd)
 {
-    delete this;
-}*/
+    delete rnd;
+}
 
 
 EXPORT_C int RND::veto_seed(int seed)
