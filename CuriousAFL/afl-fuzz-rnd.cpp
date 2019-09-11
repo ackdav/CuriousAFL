@@ -47,16 +47,7 @@ class RND {
     //auto out = model.forward(in);
 };
 
-// access functions
-EXPORT_C RND* RND_new(void)
-{
-    return new RND();
-}
 
-EXPORT_C void RND_delete(RND* this)
-{
-    delete this;
-}
 
 EXPORT_C int RND_init_model(RND* this)
 {
@@ -68,7 +59,20 @@ EXPORT_C int RND_veto_seed(RND* this, char* seed)
     return this->veto_seed(char* seed);
 }
 /*
+class RND {
 
+    //NN target;
+    //NN model;
+    //torch::optim::Adam optim(model->parameters(), torch::optim::AdamOptions(1e-3));
+
+    int veto_seed(char* seed){
+        return 1
+    }
+    void init_model(){
+
+    }
+    //auto out = model.forward(in);
+};
 
 extern "C" int call_C_veto(RND* p, string seed){
     return p->vote_seed(i);
@@ -82,11 +86,25 @@ extern "C" double call_C_f(C* p, int i) // wrapper function
 }*/
 
 
+// access functions
+EXPORT_C RND* RND_new(void)
+{
+    return new RND();
+}
+
+/*
+EXPORT_C void RND_delete(RND* this)
+{
+    delete this;
+}*/
 
 
-
-EXPORT_C int RND_veto_seed( int seed)
+EXPORT_C int RND::veto_seed(int seed)
 {
     return 1;
-//return this->veto_seed(char* seed);
+}
+
+EXPORT_C int RND_veto_seed(RND* rnd, int seed)
+{
+    return rnd->veto_seed(seed);
 }

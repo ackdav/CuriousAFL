@@ -27,11 +27,11 @@ typedef struct RND RND;
     #define EXPORT_C
 #endif
 
-/*
+
 EXPORT_C RND* RND_new(void);
 EXPORT_C void RND_delete(RND*);
-EXPORT_C void RND_init_model(RND*);
- */
-EXPORT_C int RND_veto_seed(int test );
+//EXPORT_C void RND_init_model(RND*);
+
+EXPORT_C int RND_veto_seed(RND*, int test);
 
 #endif //CURIOUSAFL_AFL_FUZZ_RND_H
