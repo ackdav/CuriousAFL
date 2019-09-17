@@ -4608,7 +4608,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     // queue_cur is current offset in queue which should be seed
 
     //Curious Edit:
-    int vote = RND_veto_seed(rnd_net, 1);//rnd_net, out_file);
+    int vote = RND_veto_seed(rnd_net, out_buf);//rnd_net, out_file);
     if (vote==1){
         return 1;
     }

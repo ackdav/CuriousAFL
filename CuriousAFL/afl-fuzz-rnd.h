@@ -15,7 +15,9 @@ class RND;
 class NN : torch::nn::Module
 {
     torch::nn::Linear in{nullptr},h{nullptr},out{nullptr};
+
 public:
+    std::vector<torch::Tensor> getParameters();
     NN(int input_size, int h_size, int output_size);
     torch::Tensor forward(torch::Tensor X);
 };
@@ -23,16 +25,23 @@ public:
 class RND
 {
     private:
-
-        //torch::optim::Adam optim(predictor_model->parameters(), torch::optim::AdamOptions(1e-3));
-        float getReward(torch::Tensor X);
-        void updateModel(torch::Tensor X);
-public:
         NN target_model;
         NN predictor_model;
+        std::deque<torch::Tensor> replay_buffer;
+        std::deque<float> reward_buffer;
+
+    //torch::optim::Adam optim;
+        //torch::Device mdevice;
+
+
+        int step_counter;
+        float getReward(torch::Tensor X);
+        void updateModel(torch::Tensor X);
+
+public:
         RND();
         void init_model();
-        int veto_seed(int);
+        int veto_seed(char[]);
 };
 
 #else
@@ -52,6 +61,6 @@ EXPORT_C RND* RND_new(void);
 EXPORT_C void RND_delete(RND*);
 //EXPORT_C void RND_init_model(RND*);
 
-EXPORT_C int RND_veto_seed(RND*, int test);
+EXPORT_C int RND_veto_seed(RND*, char seed[]);
 
 #endif //CURIOUSAFL_AFL_FUZZ_RND_H
