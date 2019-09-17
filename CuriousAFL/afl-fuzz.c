@@ -4626,7 +4626,8 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //queue_cur->fname seed with current mutation included - almost no reward signal since the change is minimal
     //zmq_send(requester, out_file,  strlen(out_file), 0);
 
-    s_send (requester, out_file);
+    //s_send (requester, out_buf, len, out_file);
+    int size = zmq_send (requester, out_buf, len, 0);
     char *string = s_recv (requester);
     if (strcmp(string,"skip")==0){
         return 1;

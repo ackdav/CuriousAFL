@@ -13,6 +13,7 @@ from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn
 import torch.nn.functional as F
+import time
 
 # RND constants - TODO: optimize
 MAX_FILESIZE = 2 ** 12
@@ -24,6 +25,7 @@ OUTPUT_DIM = 2 ** 6  # output dimension of RND
 
 replay_buffer = deque(maxlen=int(BUFFER_SIZE/5))
 reward_buffer = deque(maxlen=int(BUFFER_SIZE/5))
+
 rnd_model = None
 step_counter = 0
 writer = None
@@ -88,18 +90,20 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, seed):
+    def veto(self, out_buf):
         """
         main func for AFL to call
         :param seed:
         :return: 0 if seed should be executed, 1 if should be skipped
         """
+        out_buf = bytearray(out_buf)
+        byte_array = list(out_buf)
 
         global step_counter
         step_counter += 1
 
-        byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
-        byte_array = byte_array / 255
+        #byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
+        byte_array = np.array(byte_array) / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
 
@@ -143,7 +147,6 @@ class Dispatcher(object):
             #pool.apply(self.update_model)
             #print('updated model')
             step_counter = 0
-
         return "ok"
 
 
@@ -184,7 +187,7 @@ def main(args):
         if message == b'init':
             veto = dispatcher.initModel()
         else:
-            veto = dispatcher.veto(message.decode("utf-8"))
+            veto = dispatcher.veto(message)
             
         socket.send(bytes(str(veto), encoding='utf-8'))
 
