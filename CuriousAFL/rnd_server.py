@@ -46,6 +46,7 @@ class NN(torch.nn.Module):
         self.softmax = torch.nn.Softmax(dim=1)
 
     def forward(self, x):
+        x = x.float()
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         y = self.fc3(x)
@@ -96,13 +97,12 @@ class Dispatcher(object):
         :param seed:
         :return: 0 if seed should be executed, 1 if should be skipped
         """
-        out_buf = bytearray(out_buf)
-        byte_array = list(out_buf)
-
-        global step_counter
-        step_counter += 1
-
-        #byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
+        #out_buf = bytearray(out_buf)
+        #byte_array = list(out_buf)
+        out_buf = out_buf.decode('utf-8')
+        
+        
+        byte_array = np.fromfile(self.args.projectbase + out_buf, 'u1')
         byte_array = np.array(byte_array) / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
@@ -113,10 +113,11 @@ class Dispatcher(object):
             byte_array = np.pad(byte_array, (0, MAX_FILESIZE - len(byte_array)), 'constant',
                                 constant_values=0)
 
-        state = torch.tensor(byte_array, dtype=torch.float).to(device=device)
+        state = torch.from_numpy(byte_array).to(device=device)
 
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
-
+        
+        global step_counter
         if step_counter % 1000 == 0 and self.args.tensorboard:
             global analysis_step_count
             writer.add_scalar('RND reward', reward, analysis_step_count)
@@ -129,19 +130,23 @@ class Dispatcher(object):
                 reward < np.percentile(np.array(reward_buffer), [50])[0]:
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return "skip"
+        
+        step_counter+=1
 
         if np.random.random(1)[0] > 0.75:
             global replay_buffer
-            replay_buffer.append(byte_array)
+            replay_buffer.append(state)
 
-        if step_counter > 1000:
+        if step_counter > 10000:
             #update model
-            replay_buffer_l = np.array(replay_buffer)
+            #replay_buffer_l = np.array(list(replay_buffer))
             num = len(replay_buffer)
             K = np.min([num, BATCH_SIZE])
             #samples = np.array(random.sample(replay_buffer, K))
-            samples = replay_buffer_l[np.random.choice(replay_buffer_l.shape[0], K, replace=False)]
-            S0 = torch.tensor(samples, dtype=torch.float).to(device=device)
+            #samples = replay_buffer_l[np.random.choice(replay_buffer_l.shape[0], K, replace=False)]
+            samples = random.sample(replay_buffer, K)
+             
+            S0 = torch.stack(samples).to(device=device)
             Ri = rnd_model.get_reward(S0)
             rnd_model.update(Ri)
             #pool.apply(self.update_model)
