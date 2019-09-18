@@ -40,7 +40,7 @@ class NN(torch.nn.Module):
         self.out_dim = out_dim
         self.n_hid = n_hid
 
-        self.fc1 = torch.nn.Linear(in_dim, n_hid, 'relu')
+        self.fc1 = torch.nn.Linear(in_dim, n_hid, 'linear')
         self.fc2 = torch.nn.Linear(n_hid, n_hid, 'linear')
         self.fc3 = torch.nn.Linear(n_hid, out_dim, 'linear')
         self.softmax = torch.nn.Softmax(dim=1)
@@ -66,7 +66,7 @@ class RND:
         return reward
 
     def update(self, Ri):
-        Ri.sum().backward()
+        Ri.backward()
         self.optimizer.step()
 
 
