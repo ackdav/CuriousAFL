@@ -14,6 +14,7 @@ from torch.utils.tensorboard import SummaryWriter
 import torch
 import torch.nn
 import torch.nn.functional as F
+import os
 
 # RND constants - TODO: optimize
 MAX_FILESIZE = 2 ** 12
@@ -61,11 +62,13 @@ class RND:
         self.target = NN(in_dim, out_dim, n_hid).to(device=device)
         self.model = NN(in_dim, out_dim, n_hid).to(device=device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
-
+        self.loss = torch.nn.MSELoss()
+        
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).mean()
+        #reward = torch.pow(y_pred - y_true, 2).mean()
+        reward = self.loss(y_pred, y_true) 
         return reward
 
     def update(self, Ri):
@@ -93,7 +96,7 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, seed):
+    def veto(self, out_buf, out_buf_len, seed):
         """
         main func for AFL to call
         :param seed:
@@ -102,8 +105,13 @@ class Dispatcher(object):
 
         global step_counter
         step_counter += 1
+        #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
+        #byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
 
-        byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
+        print(out_buf)
+        print(list(out_buf))
+
+        byte_array = np.array(list(out_buf), dtype=np.float)
         byte_array = byte_array / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
@@ -166,9 +174,9 @@ def get_open_port():
 
 
 def main(args):
-    rnd_thrift = thriftpy2.load("rnd.thrift", module_name="rnd_thrift")
+    rnd_thrift = thriftpy2.load(os.path.join(os.path.dirname(__file__), "rnd.thrift"), module_name="rnd_thrift")
     print("serving...on: " + str(args.port))
-    server = make_server(rnd_thrift.Rnd, Dispatcher(args), '127.0.0.1', args.port(), client_timeout=None)
+    server = make_server(rnd_thrift.RndService, Dispatcher(args), '127.0.0.1', args.port, client_timeout=None)
 
     global device
     if not args.disable_cuda and torch.cuda.is_available():

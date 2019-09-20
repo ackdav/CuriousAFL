@@ -20,6 +20,7 @@ class NN(torch.nn.Module):
         self.softmax = torch.nn.Softmax(dim=1)
 
     def forward(self, x):
+        x = x.float()
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         y = self.fc3(x)
@@ -29,14 +30,16 @@ class NN(torch.nn.Module):
 
 class RND:
     def __init__(self, in_dim, out_dim, n_hid):
-        self.target = NN(in_dim, out_dim, n_hid).to(device='cuda:0')
-        self.model = NN(in_dim, out_dim, n_hid).to(device='cuda:0')
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
-
+        self.target = NN(in_dim, out_dim, n_hid).to(device='cpu')
+        self.model = NN(in_dim, out_dim, n_hid).to(device='cpu')
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.0001)
+        self.loss = torch.nn.MSELoss()
+        
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        reward = torch.pow(y_pred - y_true, 2).mean()
+        #reward = torch.pow(y_pred - y_true, 2).mean()
+        reward = self.loss(y_pred, y_true) 
         return reward
 
     def update(self, Ri):
