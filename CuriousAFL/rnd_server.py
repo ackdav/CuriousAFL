@@ -17,7 +17,7 @@ import torch.nn.functional as F
 import os
 
 # RND constants - TODO: optimize
-MAX_FILESIZE = 2 ** 12
+MAX_FILESIZE = 2 ** 8
 LEARNING_RATE = 1e-4
 BUFFER_SIZE = 2 ** 10  # how many seeds to keep in memory
 BATCH_SIZE = 10 ** 4  # update reference model after X executions
@@ -25,12 +25,14 @@ INPUT_DIM = MAX_FILESIZE  # input dimension of RND
 OUTPUT_DIM = 1  # output dimension of RND
 
 replay_buffer = deque(maxlen=int(BUFFER_SIZE/5))
-reward_buffer = deque(maxlen=int(BUFFER_SIZE/5))
+reward_buffer = deque(maxlen=int(BUFFER_SIZE/2))
 rnd_model = None
 step_counter = 0
 writer = None
 device = None  # pytorch device
 analysis_step_count = 0
+
+from ctypes import *
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport
@@ -50,6 +52,7 @@ class NN(torch.nn.Module):
         self.softmax = torch.nn.Softmax(dim=1)
 
     def forward(self, x):
+        x = x.float()
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         y = self.fc3(x)
@@ -85,7 +88,7 @@ class Dispatcher(object):
         try:
             global rnd_model
             print("init rnd")
-            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=1, n_hid=124, lr=self.args.learningrate)
+            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=64, n_hid=1024, lr=self.args.learningrate)
 
             if self.args.tensorboard:
                 global writer
@@ -96,33 +99,34 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, out_buf, out_buf_len, seed):
+    def veto(self, out_buf, len_, seed):
         """
         main func for AFL to call
         :param seed:
         :return: 0 if seed should be executed, 1 if should be skipped
         """
-
+        global rnd_model
         global step_counter
         step_counter += 1
+
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
-        #byte_array = np.fromfile(self.args.projectbase + seed, 'u1')
+        byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
 
-        print(out_buf)
-        print(list(out_buf))
+        #print(out_buf)
+        #print(list(out_buf))
 
-        byte_array = np.array(list(out_buf), dtype=np.float)
+        #byte_array = np.array(list(out_buf), dtype=np.float)
         byte_array = byte_array / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
 
-        if len(byte_array) > MAX_FILESIZE:
+        if byte_array.shape[0] > MAX_FILESIZE:
             byte_array = byte_array[:MAX_FILESIZE]
         else:
-            byte_array = np.pad(byte_array, (0, MAX_FILESIZE - len(byte_array)), 'constant',
+            byte_array = np.pad(byte_array, (0, MAX_FILESIZE - byte_array.shape[0]), 'constant',
                                 constant_values=0)
 
-        state = torch.tensor(byte_array, dtype=torch.float).to(device=device)
+        state = torch.from_numpy(byte_array).to(device=device)
 
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
 
@@ -134,27 +138,29 @@ class Dispatcher(object):
         global reward_buffer
         reward_buffer.append(reward)
 
-        if len(reward_buffer) > 100 and \
-                reward < np.percentile(np.array(reward_buffer), [50])[0]:
+        if reward < np.percentile(np.array(reward_buffer), [50])[0]:
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 
         if np.random.random(1)[0] > 0.75:
             global replay_buffer
-            replay_buffer.append(byte_array)
+            replay_buffer.append(state)
 
         if step_counter > 1000:
             #update model
             replay_buffer_l = np.array(replay_buffer)
-            num = len(replay_buffer)
-            K = np.min([num, BATCH_SIZE])
+            num_ = len(replay_buffer_l)
+            K = np.min([num_, BATCH_SIZE])
             #samples = np.array(random.sample(replay_buffer, K))
-            samples = replay_buffer_l[np.random.choice(replay_buffer_l.shape[0], K, replace=False)]
-            S0 = torch.tensor(samples, dtype=torch.float).to(device=device)
+            samples = replay_buffer_l[np.random.choice(len(replay_buffer_l), K, replace=False)]
+
+            S0 = torch.stack(list(samples)).to(device=device)
+            #S0 = torch.tensor(samples, dtype=torch.float).to(device=device)
             Ri = rnd_model.get_reward(S0)
             rnd_model.update(Ri)
             #pool.apply(self.update_model)
             #print('updated model')
+            torch.cuda.empty_cache()
             step_counter = 0
 
         return 0
