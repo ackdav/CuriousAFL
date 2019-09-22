@@ -76,7 +76,7 @@ afl-as: afl-as.c afl-as.h $(COMM_HDR) | test_x86
 	ln -sf afl-as as
 
 afl-fuzz: afl-fuzz.c $(COMM_HDR) | test_x86
-	$(CC) $(CFLAGS) $@.c gen-c_glib/rnd.c gen-c_glib/rnd_types.c -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $@.c gen-c_glib/rnd_types.c gen-c_glib/rnd_service.c -o $@ $(LDFLAGS)
 
 afl-showmap: afl-showmap.c $(COMM_HDR) | test_x86
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS)
