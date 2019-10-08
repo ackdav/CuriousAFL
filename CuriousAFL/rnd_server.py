@@ -163,7 +163,7 @@ class Dispatcher(object):
             #print('updated model')
             torch.cuda.empty_cache()
             step_counter = 0
-        return reward*1000
+        return reward*100
 
 
 def get_open_port():
