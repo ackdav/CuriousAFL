@@ -4792,8 +4792,7 @@ static u32 calculate_score(struct queue_entry* q) {
 
     if (rnd_service_if_veto(client, &pyReturnDouble, q->fname, &error)) {
         //pyReturn *= 10;
-        //printf("%f", pyReturnDouble);
-        printf("The double value : %f\n", pyReturnDouble);
+        //printf("The double value : %f\n", pyReturnDouble);
         perf_score *= pyReturnDouble;
     }
 
