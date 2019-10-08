@@ -93,6 +93,8 @@ RndServiceIf *client;
 GError *error = NULL;
 
 char pyReturn;
+double pyReturnDouble;
+
 int exit_status = 0;
 //Curious
 
@@ -1256,6 +1258,7 @@ static void minimize_bits(u8* dst, u8* src) {
 static void update_bitmap_score(struct queue_entry* q) {
 
   u32 i;
+  //u64 fuzz_p2      = next_p2 (q->n_fuzz);
   u64 fav_factor = q->exec_us * q->len;
 
   /* For every byte set in trace_bits[], see if there is a previous winner,
@@ -1267,6 +1270,17 @@ static void update_bitmap_score(struct queue_entry* q) {
 
        if (top_rated[i]) {
 
+           /*
+           //AFL Fast insertion
+         u64 top_rated_fuzz_p2    = next_p2 (top_rated[i]->n_fuzz);
+         u64 top_rated_fav_factor = top_rated[i]->exec_us * top_rated[i]->len;
+
+         if (fuzz_p2 > top_rated_fuzz_p2) continue;
+         else if (fuzz_p2 == top_rated_fuzz_p2) {
+
+           if (fav_factor > top_rated_fav_factor) continue;
+
+         }*/
          /* Faster-executing or smaller test cases are favored. */
 
          if (fav_factor > top_rated[i]->exec_us * top_rated[i]->len) continue;
@@ -4626,11 +4640,13 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //queue_cur->fname current seed that's being mutated in some sort
     //char f_[len+1];
     //strncpy(f_, out_buf, len );
-    if (rnd_service_if_veto(client, &pyReturn, out_buf , len, out_file, &error)) {
+
+    /*if (rnd_service_if_veto(client, &pyReturn, out_buf , len, out_file, &error)) {
         if (pyReturn == 1){
             return pyReturn;
         }
-    }
+    }*/
+
     // Curious
 
   fault = run_target(argv, exec_tmout);
@@ -4773,6 +4789,20 @@ static u32 calculate_score(struct queue_entry* q) {
     default:        perf_score *= 5;
 
   }
+
+    if (rnd_service_if_veto(client, &pyReturnDouble, q->fname, &error)) {
+        //pyReturn *= 10;
+        //printf("%f", pyReturnDouble);
+        printf("The double value : %f\n", pyReturnDouble);
+        perf_score *= pyReturnDouble;
+    }
+
+    /*
+    if (factor > MAX_FACTOR)
+        factor = MAX_FACTOR;
+
+    perf_score *= factor / POWER_BETA;
+    */
 
   /* Make sure that we don't go over limit. */
 
@@ -5109,9 +5139,10 @@ static u8 fuzz_one(char** argv) {
 
   orig_perf = perf_score = calculate_score(queue_cur);
 
-  /* Skip right away if -d is given, if we have done deterministic fuzzing on
-     this entry ourselves (was_fuzzed), or if it has gone through deterministic
-     testing in earlier, resumed runs (passed_det). */
+  if (perf_score == 0) goto abandon_entry;
+    /* Skip right away if -d is given, if we have done deterministic fuzzing on
+       this entry ourselves (was_fuzzed), or if it has gone through deterministic
+       testing in earlier, resumed runs (passed_det). */
 
   if (skip_deterministic || queue_cur->was_fuzzed || queue_cur->passed_det)
     goto havoc_stage;
@@ -7086,7 +7117,7 @@ static void usage(u8* argv0) {
        "  -o dir        - output directory for fuzzer findings\n\n"
 
        "Execution control settings:\n\n"
-
+       "  -P port       - Port to connect python RND Server\n"
        "  -f file       - location read by the fuzzed program (stdin)\n"
        "  -t msec       - timeout for each run (auto-scaled, 50-%u ms)\n"
        "  -m megs       - memory limit for child process (%u MB)\n"
@@ -7942,8 +7973,11 @@ int main(int argc, char** argv) {
                                    "output_protocol", protocol,
                                    NULL);
 
+            if (error){
+                FATAL("Could not connect to RND-Python-Server");
+            }
             // ping for init models
-            if (!error && rnd_service_if_init_model (client, &pyReturn, &error)) {
+            if (rnd_service_if_init_model (client, &pyReturn, &error)) {
                 puts("initModel()");
             }
 

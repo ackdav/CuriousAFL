@@ -99,7 +99,7 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, out_buf, len_, seed):
+    def veto(self, seed):
         """
         main func for AFL to call
         :param seed:
@@ -130,7 +130,7 @@ class Dispatcher(object):
 
         reward = rnd_model.get_reward(state).detach().clamp(0.0, 1.0).item()
 
-        if step_counter % 1000 == 0 and self.args.tensorboard:
+        if self.args.tensorboard:
             global analysis_step_count
             writer.add_scalar('RND reward', reward, analysis_step_count)
             analysis_step_count += 1
@@ -138,19 +138,20 @@ class Dispatcher(object):
         global reward_buffer
         reward_buffer.append(reward)
 
-        if reward < np.percentile(np.array(reward_buffer), [50])[0]:
+        #if reward < np.percentile(np.array(reward_buffer), [50])[0]:
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
-            return 1
+         #   return 1
 
-        if np.random.random(1)[0] > 0.75:
-            global replay_buffer
-            replay_buffer.append(state)
-
-        if step_counter > 1000:
+        #np.random.random(1)[0] > 0.75:
+        global replay_buffer
+        replay_buffer.append(state)
+        #print(replay_buffer)
+        if step_counter > 0:
             #update model
-            replay_buffer_l = np.array(replay_buffer)
-            num_ = len(replay_buffer_l)
+            replay_buffer_l = np.array(replay_buffer, dtype=object)
+            num_ = len(replay_buffer)
             K = np.min([num_, BATCH_SIZE])
+
             #samples = np.array(random.sample(replay_buffer, K))
             samples = replay_buffer_l[np.random.choice(len(replay_buffer_l), K, replace=False)]
 
@@ -162,8 +163,7 @@ class Dispatcher(object):
             #print('updated model')
             torch.cuda.empty_cache()
             step_counter = 0
-
-        return 0
+        return reward*1000
 
 
 def get_open_port():
