@@ -7942,8 +7942,11 @@ int main(int argc, char** argv) {
                                    "output_protocol", protocol,
                                    NULL);
 
+            if (error){
+                FATAL("Could not connect to RND-Python-Server");
+            }
             // ping for init models
-            if (!error && rnd_service_if_init_model (client, &pyReturn, &error)) {
+            if (rnd_service_if_init_model (client, &pyReturn, &error)) {
                 puts("initModel()");
             }
 
