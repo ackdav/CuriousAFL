@@ -108,14 +108,19 @@ class Dispatcher(object):
         global rnd_model
         global step_counter
         step_counter += 1
-
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
-        byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
+        #if len(out_buf) < len_:
 
-        #print(out_buf)
+        byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
+        #else:
+        #    byte_array = np.array(list(out_buf), dtype=np.float)
+        #    byte_array = byte_array[:len_]
+        #print(len(buff_array), len_, len(byte_array))
+        #print(buff_array)
+        #print(byte_array)
         #print(list(out_buf))
 
-        #byte_array = np.array(list(out_buf), dtype=np.float)
+        #
         byte_array = byte_array / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
@@ -138,7 +143,7 @@ class Dispatcher(object):
         global reward_buffer
         reward_buffer.append(reward)
 
-        if reward < np.percentile(np.array(reward_buffer), [50])[0]:
+        if reward < np.percentile(np.array(reward_buffer), [10])[0]:
             #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
             return 1
 

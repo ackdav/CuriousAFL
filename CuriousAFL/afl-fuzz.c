@@ -4626,11 +4626,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //queue_cur->fname current seed that's being mutated in some sort
     //char f_[len+1];
     //strncpy(f_, out_buf, len );
-    if (rnd_service_if_veto(client, &pyReturn, out_buf , len, out_file, &error)) {
-        if (pyReturn == 1){
-            return pyReturn;
-        }
-    }
+
     // Curious
 
   fault = run_target(argv, exec_tmout);
@@ -4664,6 +4660,12 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
   if (!(stage_cur % stats_update_freq) || stage_cur + 1 == stage_max)
     show_stats();
 
+    if (rnd_service_if_veto(client, &pyReturn, out_buf , len, out_file, &error)) {
+        if (pyReturn == 1){
+            return 1;
+            //return pyReturn;
+        }
+    }
   return 0;
 
 }
