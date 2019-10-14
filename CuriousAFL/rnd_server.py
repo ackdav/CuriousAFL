@@ -17,7 +17,7 @@ import torch.nn.functional as F
 import os
 
 # RND constants - TODO: optimize
-MAX_FILESIZE = 2 ** 8
+MAX_FILESIZE = 2 ** 10
 LEARNING_RATE = 1e-4
 BUFFER_SIZE = 2 ** 10  # how many seeds to keep in memory
 BATCH_SIZE = 10 ** 4  # update reference model after X executions
@@ -65,13 +65,13 @@ class RND:
         self.target = NN(in_dim, out_dim, n_hid).to(device=device)
         self.model = NN(in_dim, out_dim, n_hid).to(device=device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
-        self.loss = torch.nn.MSELoss()
+        #self.loss = torch.nn.MSELoss()
         
     def get_reward(self, x):
         y_true = self.target(x).detach()
         y_pred = self.model(x)
-        #reward = torch.pow(y_pred - y_true, 2).mean()
-        reward = self.loss(y_pred, y_true) 
+        reward = torch.pow(y_pred - y_true, 2).sum()
+        #reward = self.loss(y_pred, y_true)
         return reward
 
     def update(self, Ri):
@@ -88,7 +88,7 @@ class Dispatcher(object):
         try:
             global rnd_model
             print("init rnd")
-            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=64, n_hid=1024, lr=self.args.learningrate)
+            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=128, n_hid=512, lr=self.args.learningrate)
 
             if self.args.tensorboard:
                 global writer
@@ -163,7 +163,7 @@ class Dispatcher(object):
             #print('updated model')
             torch.cuda.empty_cache()
             step_counter = 0
-        return reward*100
+        return reward*1
 
 
 def get_open_port():
