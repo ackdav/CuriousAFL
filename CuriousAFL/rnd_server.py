@@ -99,7 +99,7 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, out_buf, len_, seed):
+    def veto(self, out_buf, depth, seed):
         """
         main func for AFL to call
         :param seed:
@@ -110,7 +110,8 @@ class Dispatcher(object):
         step_counter += 1
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
         #if len(out_buf) < len_:
-
+        if np.random.random(1)[0] < depth/100:
+            return 0
         byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
         #else:
         #    byte_array = np.array(list(out_buf), dtype=np.float)
