@@ -17,7 +17,7 @@ import torch.nn.functional as F
 import os
 
 # RND constants - TODO: optimize
-MAX_FILESIZE = 2 ** 8
+MAX_FILESIZE = 2 ** 10
 LEARNING_RATE = 1e-4
 BUFFER_SIZE = 2 ** 10  # how many seeds to keep in memory
 BATCH_SIZE = 10 ** 4  # update reference model after X executions
@@ -88,7 +88,7 @@ class Dispatcher(object):
         try:
             global rnd_model
             print("init rnd")
-            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=64, n_hid=1024, lr=self.args.learningrate)
+            rnd_model = RND(in_dim=MAX_FILESIZE, out_dim=64, n_hid=256, lr=self.args.learningrate)
 
             if self.args.tensorboard:
                 global writer
@@ -110,9 +110,15 @@ class Dispatcher(object):
         step_counter += 1
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
         #if len(out_buf) < len_:
-        if np.random.random(1)[0] < depth/100:
-            return 0
-        byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
+        #if np.random.random(1)[0] < depth/100:
+        #    return 0
+        #if np.random.random(1)[0] < 0.7:
+        #    return 1
+        #else:
+        #    return 0
+        
+        
+        byte_array = np.fromfile(os.path.join('./afl_out/.cur_input'), 'u1', MAX_FILESIZE)
         #else:
         #    byte_array = np.array(list(out_buf), dtype=np.float)
         #    byte_array = byte_array[:len_]
@@ -152,9 +158,9 @@ class Dispatcher(object):
             global replay_buffer
             replay_buffer.append(state)
 
-        if step_counter > 1000:
+        if step_counter > 10000:
             #update model
-            replay_buffer_l = np.array(replay_buffer)
+            replay_buffer_l = np.array(replay_buffer, dtype='object')
             num_ = len(replay_buffer_l)
             K = np.min([num_, BATCH_SIZE])
             #samples = np.array(random.sample(replay_buffer, K))
