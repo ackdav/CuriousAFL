@@ -4657,10 +4657,10 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
   queued_discovered += save_if_interesting(argv, out_buf, len, fault);
 
-  if (!(stage_cur % stats_update_freq) || stage_cur + 1 == stage_max)
+  if (!(stage_cur % stats_update_freq) || stage_cur + 1 == stage_max){
     show_stats();
-
-    if (rnd_service_if_veto(client, &pyReturn, out_buf , len, out_file, &error)) {
+  }
+    if (rnd_service_if_veto(client, &pyReturn, out_buf , queue_cur->depth, out_file, &error)) {
         if (pyReturn == 1){
             return 1;
             //return pyReturn;
