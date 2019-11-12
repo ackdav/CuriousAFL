@@ -5,6 +5,7 @@ test/
 .idea/
 afl-fuzz
 Notebooks/*.png
+Notebooks/edgecoverage/
 ## Default C Ignore
 
 # Prerequisites
