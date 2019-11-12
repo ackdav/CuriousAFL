@@ -108,6 +108,8 @@ class Dispatcher(object):
         global rnd_model
         global step_counter
         step_counter += 1
+        
+        return np.random.random(1)[0]
 
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
         byte_array = np.fromfile(self.args.projectbase + seed, 'u1', MAX_FILESIZE)
@@ -163,7 +165,7 @@ class Dispatcher(object):
             #print('updated model')
             torch.cuda.empty_cache()
             step_counter = 0
-        return reward*1
+        return reward*100
 
 
 def get_open_port():
