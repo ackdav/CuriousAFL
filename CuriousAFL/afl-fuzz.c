@@ -92,8 +92,14 @@ RndServiceIf *client;
 
 GError *error = NULL;
 
-char pyReturn;
+double pyReturn;
 int exit_status = 0;
+
+static u8 schedule = 0;               /* Curiosity mode */
+enum {
+    /* 00 */ MUTATION,                /* Mutation mode */
+    /* 01 */ CASE,                    /* Case mode*/
+};
 //Curious
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -4628,6 +4634,20 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //strncpy(f_, out_buf, len );
 
     // Curious
+    switch(schedule){
+        case MUTATION:
+            if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
+                if (pyReturn == 1.0){
+                    return 1;
+                }
+            }
+            break;
+        case CASE:
+            break;
+        default:
+            PFATAL ("Unkown Curiosity Mode");
+    }
+
 
   fault = run_target(argv, exec_tmout);
 
@@ -4660,12 +4680,6 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
   if (!(stage_cur % stats_update_freq) || stage_cur + 1 == stage_max){
     show_stats();
   }
-    if (rnd_service_if_veto(client, &pyReturn, out_buf , queue_cur->depth, out_file, &error)) {
-        if (pyReturn == 1){
-            return 1;
-            //return pyReturn;
-        }
-    }
   return 0;
 
 }
@@ -4749,6 +4763,18 @@ static u32 calculate_score(struct queue_entry* q) {
   /* Adjust score based on handicap. Handicap is proportional to how late
      in the game we learned about this path. Latecomers are allowed to run
      for a bit longer until they catch up with the rest. */
+
+    switch(schedule){
+        case MUTATION:
+            break;
+        case CASE:
+            if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
+                perf_score *= pyReturn;
+            }
+            break;
+        default:
+            PFATAL ("Unkown Curiosity Mode");
+    }
 
   if (q->handicap >= 4) {
 
@@ -7085,15 +7111,17 @@ static void usage(u8* argv0) {
        "Required parameters:\n\n"
 
        "  -i dir        - input directory with test cases\n"
-       "  -o dir        - output directory for fuzzer findings\n\n"
+       "  -o dir        - output directory for fuzzer findings\n"
+       "  -P port       - port to connect to RPC server\n\n"
 
        "Execution control settings:\n\n"
 
        "  -f file       - location read by the fuzzed program (stdin)\n"
        "  -t msec       - timeout for each run (auto-scaled, 50-%u ms)\n"
        "  -m megs       - memory limit for child process (%u MB)\n"
-       "  -Q            - use binary-only instrumentation (QEMU mode)\n\n"     
- 
+       "  -Q            - use binary-only instrumentation (QEMU mode)\n\n"
+       "  -R mode       - Curiosity mode (CASE or MUTATION), default: MUTATION)\n"
+
        "Fuzzing behavior settings:\n\n"
 
        "  -d            - quick & dirty mode (skips deterministic steps)\n"
@@ -7736,6 +7764,16 @@ static void save_cmdline(u32 argc, char** argv) {
 
 }
 
+// From AFLFast
+// https://github.com/mboehme/aflfast/blob/11ec1828448d27bdcc54fdeb91bf3215d4d8c583/afl-fuzz.c#L7791
+int stricmp(char const *a, char const *b) {
+    int d;
+    for (;; a++, b++) {
+        d = tolower(*a) - tolower(*b);
+        if (d != 0 || !*a)
+            return d;
+    }
+}
 
 #ifndef AFL_LIB
 
@@ -7761,7 +7799,7 @@ int main(int argc, char** argv) {
   gettimeofday(&tv, &tz);
   srandom(tv.tv_sec ^ tv.tv_usec ^ getpid());
 
-  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:P:Q")) > 0)
+  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:P:R:Q")) > 0)
 
     switch (opt) {
 
@@ -7954,6 +7992,14 @@ int main(int argc, char** argv) {
 
             // End of header edits
             break;
+
+      case 'R': /* Power schedule */
+            if (!stricmp(optarg, "mutation")) {
+                schedule = MUTATION;
+            } else if (!stricmp(optarg, "case")) {
+                schedule = CASE;
+            }
+            break;
       case 'Q': /* QEMU mode */
 
         if (qemu_mode) FATAL("Multiple -Q options not supported");
@@ -7985,6 +8031,11 @@ int main(int argc, char** argv) {
     if (qemu_mode)  FATAL("-Q and -n are mutually exclusive");
 
   }
+    switch (schedule) {
+        case MUTATION:    OKF ("Using Mutational-Curiosity"); break;
+        case CASE:         OKF ("Using Case-Curiosity"); break;
+        default : FATAL ("Unkown curiosity mode"); break;
+    }
 
   if (getenv("AFL_NO_FORKSRV"))    no_forkserver    = 1;
   if (getenv("AFL_NO_CPU_RED"))    no_cpu_meter_red = 1;

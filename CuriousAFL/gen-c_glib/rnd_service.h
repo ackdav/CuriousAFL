@@ -18,8 +18,8 @@ struct _RndServiceIfInterface
 {
   GTypeInterface parent;
 
-  gboolean (*init_model) (RndServiceIf *iface, gint8* _return, GError **error);
-  gboolean (*veto) (RndServiceIf *iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError **error);
+  gboolean (*init_model) (RndServiceIf *iface, gdouble* _return, GError **error);
+  gboolean (*veto) (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error);
 };
 typedef struct _RndServiceIfInterface RndServiceIfInterface;
 
@@ -29,8 +29,8 @@ GType rnd_service_if_get_type (void);
 #define IS_RND_SERVICE_IF(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_RND_SERVICE_IF))
 #define RND_SERVICE_IF_GET_INTERFACE(inst) (G_TYPE_INSTANCE_GET_INTERFACE ((inst), TYPE_RND_SERVICE_IF, RndServiceIfInterface))
 
-gboolean rnd_service_if_init_model (RndServiceIf *iface, gint8* _return, GError **error);
-gboolean rnd_service_if_veto (RndServiceIf *iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError **error);
+gboolean rnd_service_if_init_model (RndServiceIf *iface, gdouble* _return, GError **error);
+gboolean rnd_service_if_veto (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error);
 
 /* RndService service client */
 struct _RndServiceClient
@@ -56,12 +56,12 @@ GType rnd_service_client_get_type (void);
 #define RND_SERVICE_IS_CLIENT_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_RND_SERVICE_CLIENT))
 #define RND_SERVICE_CLIENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_RND_SERVICE_CLIENT, RndServiceClientClass))
 
-gboolean rnd_service_client_init_model (RndServiceIf * iface, gint8* _return, GError ** error);
+gboolean rnd_service_client_init_model (RndServiceIf * iface, gdouble* _return, GError ** error);
 gboolean rnd_service_client_send_init_model (RndServiceIf * iface, GError ** error);
-gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gint8* _return, GError ** error);
-gboolean rnd_service_client_veto (RndServiceIf * iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError ** error);
-gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, const gint32 len, const gchar * out_file, GError ** error);
-gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gint8* _return, GError ** error);
+gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gdouble* _return, GError ** error);
+gboolean rnd_service_client_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, GError ** error);
+gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, GError ** error);
+gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gdouble* _return, GError ** error);
 void rnd_service_client_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 void rnd_service_client_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
 
@@ -76,8 +76,8 @@ struct _RndServiceHandlerClass
 {
   GObjectClass parent;
 
-  gboolean (*init_model) (RndServiceIf *iface, gint8* _return, GError **error);
-  gboolean (*veto) (RndServiceIf *iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError **error);
+  gboolean (*init_model) (RndServiceIf *iface, gdouble* _return, GError **error);
+  gboolean (*veto) (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error);
 };
 typedef struct _RndServiceHandlerClass RndServiceHandlerClass;
 
@@ -89,8 +89,8 @@ GType rnd_service_handler_get_type (void);
 #define IS_RND_SERVICE_HANDLER_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), TYPE_RND_SERVICE_HANDLER))
 #define RND_SERVICE_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_RND_SERVICE_HANDLER, RndServiceHandlerClass))
 
-gboolean rnd_service_handler_init_model (RndServiceIf *iface, gint8* _return, GError **error);
-gboolean rnd_service_handler_veto (RndServiceIf *iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError **error);
+gboolean rnd_service_handler_init_model (RndServiceIf *iface, gdouble* _return, GError **error);
+gboolean rnd_service_handler_veto (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error);
 
 /* RndService processor */
 struct _RndServiceProcessor

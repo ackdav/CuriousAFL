@@ -22,12 +22,10 @@ class Iface(object):
     def initModel(self):
         pass
 
-    def veto(self, seed, len, out_file):
+    def veto(self, seed):
         """
         Parameters:
          - seed
-         - len
-         - out_file
 
         """
         pass
@@ -66,23 +64,19 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "initModel failed: unknown result")
 
-    def veto(self, seed, len, out_file):
+    def veto(self, seed):
         """
         Parameters:
          - seed
-         - len
-         - out_file
 
         """
-        self.send_veto(seed, len, out_file)
+        self.send_veto(seed)
         return self.recv_veto()
 
-    def send_veto(self, seed, len, out_file):
+    def send_veto(self, seed):
         self._oprot.writeMessageBegin('veto', TMessageType.CALL, self._seqid)
         args = veto_args()
         args.seed = seed
-        args.len = len
-        args.out_file = out_file
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
@@ -154,7 +148,7 @@ class Processor(Iface, TProcessor):
         iprot.readMessageEnd()
         result = veto_result()
         try:
-            result.success = self._handler.veto(args.seed, args.len, args.out_file)
+            result.success = self._handler.veto(args.seed)
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -238,8 +232,8 @@ class initModel_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.BYTE:
-                    self.success = iprot.readByte()
+                if ftype == TType.DOUBLE:
+                    self.success = iprot.readDouble()
                 else:
                     iprot.skip(ftype)
             else:
@@ -253,8 +247,8 @@ class initModel_result(object):
             return
         oprot.writeStructBegin('initModel_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.BYTE, 0)
-            oprot.writeByte(self.success)
+            oprot.writeFieldBegin('success', TType.DOUBLE, 0)
+            oprot.writeDouble(self.success)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -274,7 +268,7 @@ class initModel_result(object):
         return not (self == other)
 all_structs.append(initModel_result)
 initModel_result.thrift_spec = (
-    (0, TType.BYTE, 'success', None, None, ),  # 0
+    (0, TType.DOUBLE, 'success', None, None, ),  # 0
 )
 
 
@@ -282,16 +276,12 @@ class veto_args(object):
     """
     Attributes:
      - seed
-     - len
-     - out_file
 
     """
 
 
-    def __init__(self, seed=None, len=None, out_file=None,):
+    def __init__(self, seed=None,):
         self.seed = seed
-        self.len = len
-        self.out_file = out_file
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -307,16 +297,6 @@ class veto_args(object):
                     self.seed = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.I32:
-                    self.len = iprot.readI32()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 3:
-                if ftype == TType.STRING:
-                    self.out_file = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -330,14 +310,6 @@ class veto_args(object):
         if self.seed is not None:
             oprot.writeFieldBegin('seed', TType.STRING, 1)
             oprot.writeString(self.seed.encode('utf-8') if sys.version_info[0] == 2 else self.seed)
-            oprot.writeFieldEnd()
-        if self.len is not None:
-            oprot.writeFieldBegin('len', TType.I32, 2)
-            oprot.writeI32(self.len)
-            oprot.writeFieldEnd()
-        if self.out_file is not None:
-            oprot.writeFieldBegin('out_file', TType.STRING, 3)
-            oprot.writeString(self.out_file.encode('utf-8') if sys.version_info[0] == 2 else self.out_file)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -359,8 +331,6 @@ all_structs.append(veto_args)
 veto_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'seed', 'UTF8', None, ),  # 1
-    (2, TType.I32, 'len', None, None, ),  # 2
-    (3, TType.STRING, 'out_file', 'UTF8', None, ),  # 3
 )
 
 
@@ -385,8 +355,8 @@ class veto_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.BYTE:
-                    self.success = iprot.readByte()
+                if ftype == TType.DOUBLE:
+                    self.success = iprot.readDouble()
                 else:
                     iprot.skip(ftype)
             else:
@@ -400,8 +370,8 @@ class veto_result(object):
             return
         oprot.writeStructBegin('veto_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.BYTE, 0)
-            oprot.writeByte(self.success)
+            oprot.writeFieldBegin('success', TType.DOUBLE, 0)
+            oprot.writeDouble(self.success)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -421,7 +391,7 @@ class veto_result(object):
         return not (self == other)
 all_structs.append(veto_result)
 veto_result.thrift_spec = (
-    (0, TType.BYTE, 'success', None, None, ),  # 0
+    (0, TType.DOUBLE, 'success', None, None, ),  # 0
 )
 fix_spec(all_structs)
 del all_structs

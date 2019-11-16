@@ -213,9 +213,9 @@ rnd_service_init_model_result_read (ThriftStruct *object, ThriftProtocol *protoc
     switch (fid)
     {
       case 0:
-        if (ftype == T_BYTE)
+        if (ftype == T_DOUBLE)
         {
-          if ((ret = thrift_protocol_read_byte (protocol, &this_object->success, error)) < 0)
+          if ((ret = thrift_protocol_read_double (protocol, &this_object->success, error)) < 0)
             return -1;
           xfer += ret;
           this_object->__isset_success = TRUE;
@@ -255,10 +255,10 @@ rnd_service_init_model_result_write (ThriftStruct *object, ThriftProtocol *proto
     return -1;
   xfer += ret;
   if (this_object->__isset_success == TRUE) {
-    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_BYTE, 0, error)) < 0)
+    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_DOUBLE, 0, error)) < 0)
       return -1;
     xfer += ret;
-    if ((ret = thrift_protocol_write_byte (protocol, this_object->success, error)) < 0)
+    if ((ret = thrift_protocol_write_double (protocol, this_object->success, error)) < 0)
       return -1;
     xfer += ret;
 
@@ -287,7 +287,7 @@ rnd_service_init_model_result_set_property (GObject *object,
   switch (property_id)
   {
     case PROP_RND_SERVICE_INIT_MODEL_RESULT_SUCCESS:
-      self->success = g_value_get_int (value);
+      self->success = g_value_get_double (value);
       self->__isset_success = TRUE;
       break;
 
@@ -308,7 +308,7 @@ rnd_service_init_model_result_get_property (GObject *object,
   switch (property_id)
   {
     case PROP_RND_SERVICE_INIT_MODEL_RESULT_SUCCESS:
-      g_value_set_int (value, self->success);
+      g_value_set_double (value, self->success);
       break;
 
     default:
@@ -351,13 +351,13 @@ rnd_service_init_model_result_class_init (RndServiceInitModelResultClass * cls)
   g_object_class_install_property
     (gobject_class,
      PROP_RND_SERVICE_INIT_MODEL_RESULT_SUCCESS,
-     g_param_spec_int ("success",
-                       NULL,
-                       NULL,
-                       G_MININT8,
-                       G_MAXINT8,
-                       0,
-                       G_PARAM_READWRITE));
+     g_param_spec_double ("success",
+                          NULL,
+                          NULL,
+                          -INFINITY,
+                          INFINITY,
+                          0,
+                          G_PARAM_READWRITE));
 }
 
 GType
@@ -392,9 +392,7 @@ rnd_service_init_model_result_get_type (void)
 enum _RndServiceVetoArgsProperties
 {
   PROP_RND_SERVICE_VETO_ARGS_0,
-  PROP_RND_SERVICE_VETO_ARGS_SEED,
-  PROP_RND_SERVICE_VETO_ARGS_LEN,
-  PROP_RND_SERVICE_VETO_ARGS_OUT_FILE
+  PROP_RND_SERVICE_VETO_ARGS_SEED
 };
 
 /* reads a rnd_service_veto_args object */
@@ -465,38 +463,6 @@ rnd_service_veto_args_read (ThriftStruct *object, ThriftProtocol *protocol, GErr
           xfer += ret;
         }
         break;
-      case 2:
-        if (ftype == T_I32)
-        {
-          if ((ret = thrift_protocol_read_i32 (protocol, &this_object->len, error)) < 0)
-            return -1;
-          xfer += ret;
-          this_object->__isset_len = TRUE;
-        } else {
-          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
-            return -1;
-          xfer += ret;
-        }
-        break;
-      case 3:
-        if (ftype == T_STRING)
-        {
-          if (this_object->out_file != NULL)
-          {
-            g_free(this_object->out_file);
-            this_object->out_file = NULL;
-          }
-
-          if ((ret = thrift_protocol_read_string (protocol, &this_object->out_file, error)) < 0)
-            return -1;
-          xfer += ret;
-          this_object->__isset_out_file = TRUE;
-        } else {
-          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
-            return -1;
-          xfer += ret;
-        }
-        break;
       default:
         if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
           return -1;
@@ -536,26 +502,6 @@ rnd_service_veto_args_write (ThriftStruct *object, ThriftProtocol *protocol, GEr
   if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
     return -1;
   xfer += ret;
-  if ((ret = thrift_protocol_write_field_begin (protocol, "len", T_I32, 2, error)) < 0)
-    return -1;
-  xfer += ret;
-  if ((ret = thrift_protocol_write_i32 (protocol, this_object->len, error)) < 0)
-    return -1;
-  xfer += ret;
-
-  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
-    return -1;
-  xfer += ret;
-  if ((ret = thrift_protocol_write_field_begin (protocol, "out_file", T_STRING, 3, error)) < 0)
-    return -1;
-  xfer += ret;
-  if ((ret = thrift_protocol_write_string (protocol, this_object->out_file, error)) < 0)
-    return -1;
-  xfer += ret;
-
-  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
-    return -1;
-  xfer += ret;
   if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
     return -1;
   xfer += ret;
@@ -583,18 +529,6 @@ rnd_service_veto_args_set_property (GObject *object,
       self->__isset_seed = TRUE;
       break;
 
-    case PROP_RND_SERVICE_VETO_ARGS_LEN:
-      self->len = g_value_get_int (value);
-      self->__isset_len = TRUE;
-      break;
-
-    case PROP_RND_SERVICE_VETO_ARGS_OUT_FILE:
-      if (self->out_file != NULL)
-        g_free (self->out_file);
-      self->out_file = g_value_dup_string (value);
-      self->__isset_out_file = TRUE;
-      break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -615,14 +549,6 @@ rnd_service_veto_args_get_property (GObject *object,
       g_value_set_string (value, self->seed);
       break;
 
-    case PROP_RND_SERVICE_VETO_ARGS_LEN:
-      g_value_set_int (value, self->len);
-      break;
-
-    case PROP_RND_SERVICE_VETO_ARGS_OUT_FILE:
-      g_value_set_string (value, self->out_file);
-      break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -636,10 +562,6 @@ rnd_service_veto_args_instance_init (RndServiceVetoArgs * object)
   THRIFT_UNUSED_VAR (object);
   object->seed = NULL;
   object->__isset_seed = FALSE;
-  object->len = 0;
-  object->__isset_len = FALSE;
-  object->out_file = NULL;
-  object->__isset_out_file = FALSE;
 }
 
 static void 
@@ -653,11 +575,6 @@ rnd_service_veto_args_finalize (GObject *object)
   {
     g_free(tobject->seed);
     tobject->seed = NULL;
-  }
-  if (tobject->out_file != NULL)
-  {
-    g_free(tobject->out_file);
-    tobject->out_file = NULL;
   }
 }
 
@@ -678,26 +595,6 @@ rnd_service_veto_args_class_init (RndServiceVetoArgsClass * cls)
     (gobject_class,
      PROP_RND_SERVICE_VETO_ARGS_SEED,
      g_param_spec_string ("seed",
-                          NULL,
-                          NULL,
-                          NULL,
-                          G_PARAM_READWRITE));
-
-  g_object_class_install_property
-    (gobject_class,
-     PROP_RND_SERVICE_VETO_ARGS_LEN,
-     g_param_spec_int ("len",
-                       NULL,
-                       NULL,
-                       G_MININT32,
-                       G_MAXINT32,
-                       0,
-                       G_PARAM_READWRITE));
-
-  g_object_class_install_property
-    (gobject_class,
-     PROP_RND_SERVICE_VETO_ARGS_OUT_FILE,
-     g_param_spec_string ("out_file",
                           NULL,
                           NULL,
                           NULL,
@@ -789,9 +686,9 @@ rnd_service_veto_result_read (ThriftStruct *object, ThriftProtocol *protocol, GE
     switch (fid)
     {
       case 0:
-        if (ftype == T_BYTE)
+        if (ftype == T_DOUBLE)
         {
-          if ((ret = thrift_protocol_read_byte (protocol, &this_object->success, error)) < 0)
+          if ((ret = thrift_protocol_read_double (protocol, &this_object->success, error)) < 0)
             return -1;
           xfer += ret;
           this_object->__isset_success = TRUE;
@@ -831,10 +728,10 @@ rnd_service_veto_result_write (ThriftStruct *object, ThriftProtocol *protocol, G
     return -1;
   xfer += ret;
   if (this_object->__isset_success == TRUE) {
-    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_BYTE, 0, error)) < 0)
+    if ((ret = thrift_protocol_write_field_begin (protocol, "success", T_DOUBLE, 0, error)) < 0)
       return -1;
     xfer += ret;
-    if ((ret = thrift_protocol_write_byte (protocol, this_object->success, error)) < 0)
+    if ((ret = thrift_protocol_write_double (protocol, this_object->success, error)) < 0)
       return -1;
     xfer += ret;
 
@@ -863,7 +760,7 @@ rnd_service_veto_result_set_property (GObject *object,
   switch (property_id)
   {
     case PROP_RND_SERVICE_VETO_RESULT_SUCCESS:
-      self->success = g_value_get_int (value);
+      self->success = g_value_get_double (value);
       self->__isset_success = TRUE;
       break;
 
@@ -884,7 +781,7 @@ rnd_service_veto_result_get_property (GObject *object,
   switch (property_id)
   {
     case PROP_RND_SERVICE_VETO_RESULT_SUCCESS:
-      g_value_set_int (value, self->success);
+      g_value_set_double (value, self->success);
       break;
 
     default:
@@ -927,13 +824,13 @@ rnd_service_veto_result_class_init (RndServiceVetoResultClass * cls)
   g_object_class_install_property
     (gobject_class,
      PROP_RND_SERVICE_VETO_RESULT_SUCCESS,
-     g_param_spec_int ("success",
-                       NULL,
-                       NULL,
-                       G_MININT8,
-                       G_MAXINT8,
-                       0,
-                       G_PARAM_READWRITE));
+     g_param_spec_double ("success",
+                          NULL,
+                          NULL,
+                          -INFINITY,
+                          INFINITY,
+                          0,
+                          G_PARAM_READWRITE));
 }
 
 GType

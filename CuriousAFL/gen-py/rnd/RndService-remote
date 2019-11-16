@@ -24,8 +24,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
     print('')
     print('Functions:')
-    print('  i8 initModel()')
-    print('  i8 veto(string seed, i32 len, string out_file)')
+    print('  double initModel()')
+    print('  double veto(string seed)')
     print('')
     sys.exit(0)
 
@@ -112,10 +112,10 @@ if cmd == 'initModel':
     pp.pprint(client.initModel())
 
 elif cmd == 'veto':
-    if len(args) != 3:
-        print('veto requires 3 args')
+    if len(args) != 1:
+        print('veto requires 1 args')
         sys.exit(1)
-    pp.pprint(client.veto(args[0], eval(args[1]), args[2],))
+    pp.pprint(client.veto(args[0],))
 
 else:
     print('Unrecognized method %s' % cmd)

@@ -46,7 +46,7 @@ struct _RndServiceInitModelResult
   ThriftStruct parent; 
 
   /* public */
-  gint8 success;
+  gdouble success;
   gboolean __isset_success;
 };
 typedef struct _RndServiceInitModelResult RndServiceInitModelResult;
@@ -73,10 +73,6 @@ struct _RndServiceVetoArgs
   /* public */
   gchar * seed;
   gboolean __isset_seed;
-  gint32 len;
-  gboolean __isset_len;
-  gchar * out_file;
-  gboolean __isset_out_file;
 };
 typedef struct _RndServiceVetoArgs RndServiceVetoArgs;
 
@@ -100,7 +96,7 @@ struct _RndServiceVetoResult
   ThriftStruct parent; 
 
   /* public */
-  gint8 success;
+  gdouble success;
   gboolean __isset_success;
 };
 typedef struct _RndServiceVetoResult RndServiceVetoResult;

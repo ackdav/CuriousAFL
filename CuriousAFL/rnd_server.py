@@ -99,7 +99,7 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, out_buf, depth, seed):
+    def veto(self, seed):
         """
         main func for AFL to call
         :param seed:
@@ -118,7 +118,7 @@ class Dispatcher(object):
         #    return 0
         
         
-        byte_array = np.fromfile(os.path.join('./afl_out/.cur_input'), 'u1', MAX_FILESIZE)
+        byte_array = np.fromfile(os.path.join(self.args.projectbase ,seed), 'u1', MAX_FILESIZE)
         #else:
         #    byte_array = np.array(list(out_buf), dtype=np.float)
         #    byte_array = byte_array[:len_]
@@ -217,7 +217,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Launching RND Network as a Thrift RPC")
     parser.add_argument(
         '--projectbase',
-        help='update model after x executions',
+        help='in which location are afl_in, afl_out etc located.',
         default='.')
     parser.add_argument(
         '--tensorboard', help='launch Tensorboard to monitor curiosity values', type=bool, default=False)

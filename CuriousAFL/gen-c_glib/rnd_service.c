@@ -10,15 +10,15 @@
 #include "rnd_service.h"
 
 gboolean
-rnd_service_if_init_model (RndServiceIf *iface, gint8* _return, GError **error)
+rnd_service_if_init_model (RndServiceIf *iface, gdouble* _return, GError **error)
 {
   return RND_SERVICE_IF_GET_INTERFACE (iface)->init_model (iface, _return, error);
 }
 
 gboolean
-rnd_service_if_veto (RndServiceIf *iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError **error)
+rnd_service_if_veto (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error)
 {
-  return RND_SERVICE_IF_GET_INTERFACE (iface)->veto (iface, _return, seed, len, out_file, error);
+  return RND_SERVICE_IF_GET_INTERFACE (iface)->veto (iface, _return, seed, error);
 }
 
 GType
@@ -133,7 +133,7 @@ gboolean rnd_service_client_send_init_model (RndServiceIf * iface, GError ** err
   return TRUE;
 }
 
-gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gint8* _return, GError ** error)
+gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gdouble* _return, GError ** error)
 {
   gint32 rseqid;
   gchar * fname = NULL;
@@ -218,9 +218,9 @@ gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gint8* _retur
       switch (fid)
       {
         case 0:
-          if (ftype == T_BYTE)
+          if (ftype == T_DOUBLE)
           {
-            if ((ret = thrift_protocol_read_byte (protocol, &*_return, error)) < 0)
+            if ((ret = thrift_protocol_read_double (protocol, &*_return, error)) < 0)
               return 0;
             xfer += ret;
           } else {
@@ -255,7 +255,7 @@ gboolean rnd_service_client_recv_init_model (RndServiceIf * iface, gint8* _retur
   return TRUE;
 }
 
-gboolean rnd_service_client_init_model (RndServiceIf * iface, gint8* _return, GError ** error)
+gboolean rnd_service_client_init_model (RndServiceIf * iface, gdouble* _return, GError ** error)
 {
   if (!rnd_service_client_send_init_model (iface, error))
     return FALSE;
@@ -264,7 +264,7 @@ gboolean rnd_service_client_init_model (RndServiceIf * iface, gint8* _return, GE
   return TRUE;
 }
 
-gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, const gint32 len, const gchar * out_file, GError ** error)
+gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, GError ** error)
 {
   gint32 cseqid = 0;
   ThriftProtocol * protocol = RND_SERVICE_CLIENT (iface)->output_protocol;
@@ -290,26 +290,6 @@ gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed,
     if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
       return 0;
     xfer += ret;
-    if ((ret = thrift_protocol_write_field_begin (protocol, "len", T_I32, 2, error)) < 0)
-      return 0;
-    xfer += ret;
-    if ((ret = thrift_protocol_write_i32 (protocol, len, error)) < 0)
-      return 0;
-    xfer += ret;
-
-    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
-      return 0;
-    xfer += ret;
-    if ((ret = thrift_protocol_write_field_begin (protocol, "out_file", T_STRING, 3, error)) < 0)
-      return 0;
-    xfer += ret;
-    if ((ret = thrift_protocol_write_string (protocol, out_file, error)) < 0)
-      return 0;
-    xfer += ret;
-
-    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
-      return 0;
-    xfer += ret;
     if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
       return 0;
     xfer += ret;
@@ -329,7 +309,7 @@ gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed,
   return TRUE;
 }
 
-gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gint8* _return, GError ** error)
+gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gdouble* _return, GError ** error)
 {
   gint32 rseqid;
   gchar * fname = NULL;
@@ -414,9 +394,9 @@ gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gint8* _return, GEr
       switch (fid)
       {
         case 0:
-          if (ftype == T_BYTE)
+          if (ftype == T_DOUBLE)
           {
-            if ((ret = thrift_protocol_read_byte (protocol, &*_return, error)) < 0)
+            if ((ret = thrift_protocol_read_double (protocol, &*_return, error)) < 0)
               return 0;
             xfer += ret;
           } else {
@@ -451,9 +431,9 @@ gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gint8* _return, GEr
   return TRUE;
 }
 
-gboolean rnd_service_client_veto (RndServiceIf * iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError ** error)
+gboolean rnd_service_client_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, GError ** error)
 {
-  if (!rnd_service_client_send_veto (iface, seed, len, out_file, error))
+  if (!rnd_service_client_send_veto (iface, seed, error))
     return FALSE;
   if (!rnd_service_client_recv_veto (iface, _return, error))
     return FALSE;
@@ -509,18 +489,18 @@ G_DEFINE_TYPE_WITH_CODE (RndServiceHandler,
                          G_IMPLEMENT_INTERFACE (TYPE_RND_SERVICE_IF,
                                                 rnd_service_handler_rnd_service_if_interface_init))
 
-gboolean rnd_service_handler_init_model (RndServiceIf * iface, gint8* _return, GError ** error)
+gboolean rnd_service_handler_init_model (RndServiceIf * iface, gdouble* _return, GError ** error)
 {
   g_return_val_if_fail (IS_RND_SERVICE_HANDLER (iface), FALSE);
 
   return RND_SERVICE_HANDLER_GET_CLASS (iface)->init_model (iface, _return, error);
 }
 
-gboolean rnd_service_handler_veto (RndServiceIf * iface, gint8* _return, const gchar * seed, const gint32 len, const gchar * out_file, GError ** error)
+gboolean rnd_service_handler_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, GError ** error)
 {
   g_return_val_if_fail (IS_RND_SERVICE_HANDLER (iface), FALSE);
 
-  return RND_SERVICE_HANDLER_GET_CLASS (iface)->veto (iface, _return, seed, len, out_file, error);
+  return RND_SERVICE_HANDLER_GET_CLASS (iface)->veto (iface, _return, seed, error);
 }
 
 static void
@@ -609,7 +589,7 @@ rnd_service_processor_process_init_model (RndServiceProcessor *self,
       (thrift_protocol_read_message_end (input_protocol, error) != -1) &&
       (thrift_transport_read_end (transport, error) != FALSE))
   {
-    gint return_value;
+    gdouble return_value;
     RndServiceInitModelResult * result_struct;
 
     g_object_unref (transport);
@@ -619,10 +599,10 @@ rnd_service_processor_process_init_model (RndServiceProcessor *self,
     g_object_get (result_struct, "success", &return_value, NULL);
 
     if (rnd_service_handler_init_model (RND_SERVICE_IF (self->handler),
-                                        (gint8 *)&return_value,
+                                        &return_value,
                                         error) == TRUE)
     {
-      g_object_set (result_struct, "success", (gint)(gint8)return_value, NULL);
+      g_object_set (result_struct, "success", return_value, NULL);
 
       result =
         ((thrift_protocol_write_message_begin (output_protocol,
@@ -698,15 +678,11 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
       (thrift_transport_read_end (transport, error) != FALSE))
   {
     gchar * seed;
-    gint len;
-    gchar * out_file;
-    gint return_value;
+    gdouble return_value;
     RndServiceVetoResult * result_struct;
 
     g_object_get (args,
                   "seed", &seed,
-                  "len", &len,
-                  "out_file", &out_file,
                   NULL);
 
     g_object_unref (transport);
@@ -716,13 +692,11 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
     g_object_get (result_struct, "success", &return_value, NULL);
 
     if (rnd_service_handler_veto (RND_SERVICE_IF (self->handler),
-                                  (gint8 *)&return_value,
+                                  &return_value,
                                   seed,
-                                  len,
-                                  out_file,
                                   error) == TRUE)
     {
-      g_object_set (result_struct, "success", (gint)(gint8)return_value, NULL);
+      g_object_set (result_struct, "success", return_value, NULL);
 
       result =
         ((thrift_protocol_write_message_begin (output_protocol,
@@ -763,8 +737,6 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
 
     if (seed != NULL)
       g_free (seed);
-    if (out_file != NULL)
-      g_free (out_file);
     g_object_unref (result_struct);
 
     if (result == TRUE)
