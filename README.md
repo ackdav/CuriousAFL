@@ -1,1 +1,1 @@
-docs/README
+# Curious AFL
