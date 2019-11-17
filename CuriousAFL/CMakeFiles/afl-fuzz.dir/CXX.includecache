@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz-rnd.cpp
+afl-fuzz-rnd.h
+/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz-rnd.h
+string.h
+-
+deque
+-
+math.h
+-
+torch/torch.h
+-
+
+/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz-rnd.h
+

@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/afl-gotcpu.dir/afl-gotcpu.c.o  -o afl-gotcpu -ldl 

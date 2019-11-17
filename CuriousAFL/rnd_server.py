@@ -109,7 +109,6 @@ class Dispatcher(object):
         global step_counter
         step_counter += 1
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
-        #if len(out_buf) < len_:
         #if np.random.random(1)[0] < depth/100:
         #    return 0
         #if np.random.random(1)[0] < 0.7:
@@ -123,9 +122,6 @@ class Dispatcher(object):
         #    byte_array = np.array(list(out_buf), dtype=np.float)
         #    byte_array = byte_array[:len_]
         #print(len(buff_array), len_, len(byte_array))
-        #print(buff_array)
-        #print(byte_array)
-        #print(list(out_buf))
 
         #
         byte_array = byte_array / 255

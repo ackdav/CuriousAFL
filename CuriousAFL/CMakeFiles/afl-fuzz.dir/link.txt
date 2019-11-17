@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/afl-fuzz.dir/afl-fuzz.c.o  -o afl-fuzz -Wl,-rpath,/home/david/Documents/libtorch/lib: libafl-fuzz-rnd.a -ldl /home/david/Documents/libtorch/lib/libtorch.so /home/david/Documents/libtorch/lib/libc10.so -lpthread -Wl,--no-as-needed,/home/david/Documents/libtorch/lib/libtorch.so -Wl,--as-needed /home/david/Documents/libtorch/lib/libc10.so 

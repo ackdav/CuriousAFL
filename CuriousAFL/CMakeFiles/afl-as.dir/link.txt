@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/afl-as.dir/afl-as.c.o  -o afl-as -ldl 

@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/afl-tmin.dir/afl-tmin.c.o  -o afl-tmin -ldl 

@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="afl"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\libtorch\;CMake Files\..\..\..\libtorch\share\;CMake Files\..\..\..\libtorch\share\cmake\;CMake Files\..\..\..\libtorch\share\cmake\Torch\;CMake Files\..\..\..\libtorch\share\cmake\Caffe2\;CMake Files\..\..\..\libtorch\share\cmake\Caffe2\public\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test-instr1_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test-instr1_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test-instr_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test-instr_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test-instr0_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test-instr0_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-gotcpu">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gotcpu" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-gotcpu"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-gotcpu/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gotcpu" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-gotcpu/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-clang++_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-clang++_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_x86_runner">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test_x86_runner"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-fuzz-rnd">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/libafl-fuzz-rnd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_THP_CORE"/>
+					<Add option="-DAT_PARALLEL_OPENMP=1"/>
+					<Add directory="/home/david/Documents/libtorch/include"/>
+					<Add directory="/home/david/Documents/libtorch/include/torch/csrc/api/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-fuzz-rnd"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-fuzz-rnd/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/libafl-fuzz-rnd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_THP_CORE"/>
+					<Add option="-DAT_PARALLEL_OPENMP=1"/>
+					<Add directory="/home/david/Documents/libtorch/include"/>
+					<Add directory="/home/david/Documents/libtorch/include/torch/csrc/api/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-fuzz-rnd/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-tmin">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-tmin" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-tmin"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-tmin/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-tmin" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-tmin/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-showmap">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-showmap" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-showmap"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-showmap/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-showmap" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-showmap/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-gcc">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gcc" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-gcc"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-gcc/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gcc" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-gcc/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-g++_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-g++_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_build">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test_build"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-clang_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-clang_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-fuzz">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+					<Add option="-D_THP_CORE"/>
+					<Add option="-DAT_PARALLEL_OPENMP=1"/>
+					<Add directory="/home/david/Documents/libtorch/include"/>
+					<Add directory="/home/david/Documents/libtorch/include/torch/csrc/api/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-fuzz"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-fuzz/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+					<Add option="-D_THP_CORE"/>
+					<Add option="-DAT_PARALLEL_OPENMP=1"/>
+					<Add directory="/home/david/Documents/libtorch/include"/>
+					<Add directory="/home/david/Documents/libtorch/include/torch/csrc/api/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-fuzz/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_x86_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 test_x86_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-analyze">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-analyze" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-analyze"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-analyze/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-analyze" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-analyze/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-as">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-as" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-as"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="afl-as/fast">
+				<Option output="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-as" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_FORTIFY_SOURCE=2"/>
+					<Add option="-DAFL_PATH=&quot;/usr/local/lib/afl&quot;"/>
+					<Add option="-DDOC_PATH=&quot;/usr/local/share/doc/afl&quot;"/>
+					<Add option="-DBIN_PATH=&quot;/usr/local/bin&quot;"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 afl-as/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="as_generator">
+				<Option working_dir="/home/david/Documents/gits/CuriousAFL/CuriousAFL"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 as_generator"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/david/Documents/gits/CuriousAFL/CuriousAFL/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-analyze.c">
+			<Option target="afl-analyze"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-as.c">
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-as.h">
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz-rnd.cpp">
+			<Option target="afl-fuzz-rnd"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz-rnd.h">
+			<Option target="afl-fuzz-rnd"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-fuzz.c">
+			<Option target="afl-fuzz"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gcc.c">
+			<Option target="afl-gcc"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-gotcpu.c">
+			<Option target="afl-gotcpu"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-showmap.c">
+			<Option target="afl-showmap"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/afl-tmin.c">
+			<Option target="afl-tmin"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/alloc-inl.h">
+			<Option target="afl-gotcpu"/>
+			<Option target="afl-tmin"/>
+			<Option target="afl-showmap"/>
+			<Option target="afl-gcc"/>
+			<Option target="afl-fuzz"/>
+			<Option target="afl-analyze"/>
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/config.h">
+			<Option target="afl-gotcpu"/>
+			<Option target="afl-tmin"/>
+			<Option target="afl-showmap"/>
+			<Option target="afl-gcc"/>
+			<Option target="afl-fuzz"/>
+			<Option target="afl-analyze"/>
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/debug.h">
+			<Option target="afl-gotcpu"/>
+			<Option target="afl-tmin"/>
+			<Option target="afl-showmap"/>
+			<Option target="afl-gcc"/>
+			<Option target="afl-fuzz"/>
+			<Option target="afl-analyze"/>
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/types.h">
+			<Option target="afl-gotcpu"/>
+			<Option target="afl-tmin"/>
+			<Option target="afl-showmap"/>
+			<Option target="afl-gcc"/>
+			<Option target="afl-fuzz"/>
+			<Option target="afl-analyze"/>
+			<Option target="afl-as"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/cmake/options.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/cmake/packaging.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/cmake/utils.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Torch/TorchConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Torch\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Torch/TorchConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Torch\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/Caffe2Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/Caffe2ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/Caffe2Targets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/Caffe2Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/public/mkl.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\public\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/public/mkldnn.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\public\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/public/threads.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\public\"/>
+		</Unit>
+		<Unit filename="/home/david/Documents/gits/CuriousAFL/CuriousAFL/../../../libtorch/share/cmake/Caffe2/public/utils.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\libtorch\share\cmake\Caffe2\public\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
