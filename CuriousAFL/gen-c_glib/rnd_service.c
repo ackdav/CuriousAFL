@@ -16,9 +16,9 @@ rnd_service_if_init_model (RndServiceIf *iface, gdouble* _return, GError **error
 }
 
 gboolean
-rnd_service_if_veto (RndServiceIf *iface, gdouble* _return, const gchar * seed, GError **error)
+rnd_service_if_veto (RndServiceIf *iface, gdouble* _return, const gchar * seed, const gchar * mode, GError **error)
 {
-  return RND_SERVICE_IF_GET_INTERFACE (iface)->veto (iface, _return, seed, error);
+  return RND_SERVICE_IF_GET_INTERFACE (iface)->veto (iface, _return, seed, mode, error);
 }
 
 GType
@@ -264,7 +264,7 @@ gboolean rnd_service_client_init_model (RndServiceIf * iface, gdouble* _return, 
   return TRUE;
 }
 
-gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, GError ** error)
+gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed, const gchar * mode, GError ** error)
 {
   gint32 cseqid = 0;
   ThriftProtocol * protocol = RND_SERVICE_CLIENT (iface)->output_protocol;
@@ -284,6 +284,16 @@ gboolean rnd_service_client_send_veto (RndServiceIf * iface, const gchar * seed,
       return 0;
     xfer += ret;
     if ((ret = thrift_protocol_write_string (protocol, seed, error)) < 0)
+      return 0;
+    xfer += ret;
+
+    if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
+      return 0;
+    xfer += ret;
+    if ((ret = thrift_protocol_write_field_begin (protocol, "mode", T_STRING, 2, error)) < 0)
+      return 0;
+    xfer += ret;
+    if ((ret = thrift_protocol_write_string (protocol, mode, error)) < 0)
       return 0;
     xfer += ret;
 
@@ -431,9 +441,9 @@ gboolean rnd_service_client_recv_veto (RndServiceIf * iface, gdouble* _return, G
   return TRUE;
 }
 
-gboolean rnd_service_client_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, GError ** error)
+gboolean rnd_service_client_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, const gchar * mode, GError ** error)
 {
-  if (!rnd_service_client_send_veto (iface, seed, error))
+  if (!rnd_service_client_send_veto (iface, seed, mode, error))
     return FALSE;
   if (!rnd_service_client_recv_veto (iface, _return, error))
     return FALSE;
@@ -496,11 +506,11 @@ gboolean rnd_service_handler_init_model (RndServiceIf * iface, gdouble* _return,
   return RND_SERVICE_HANDLER_GET_CLASS (iface)->init_model (iface, _return, error);
 }
 
-gboolean rnd_service_handler_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, GError ** error)
+gboolean rnd_service_handler_veto (RndServiceIf * iface, gdouble* _return, const gchar * seed, const gchar * mode, GError ** error)
 {
   g_return_val_if_fail (IS_RND_SERVICE_HANDLER (iface), FALSE);
 
-  return RND_SERVICE_HANDLER_GET_CLASS (iface)->veto (iface, _return, seed, error);
+  return RND_SERVICE_HANDLER_GET_CLASS (iface)->veto (iface, _return, seed, mode, error);
 }
 
 static void
@@ -678,11 +688,13 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
       (thrift_transport_read_end (transport, error) != FALSE))
   {
     gchar * seed;
+    gchar * mode;
     gdouble return_value;
     RndServiceVetoResult * result_struct;
 
     g_object_get (args,
                   "seed", &seed,
+                  "mode", &mode,
                   NULL);
 
     g_object_unref (transport);
@@ -694,6 +706,7 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
     if (rnd_service_handler_veto (RND_SERVICE_IF (self->handler),
                                   &return_value,
                                   seed,
+                                  mode,
                                   error) == TRUE)
     {
       g_object_set (result_struct, "success", return_value, NULL);
@@ -737,6 +750,8 @@ rnd_service_processor_process_veto (RndServiceProcessor *self,
 
     if (seed != NULL)
       g_free (seed);
+    if (mode != NULL)
+      g_free (mode);
     g_object_unref (result_struct);
 
     if (result == TRUE)

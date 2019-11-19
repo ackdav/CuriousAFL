@@ -22,10 +22,11 @@ class Iface(object):
     def initModel(self):
         pass
 
-    def veto(self, seed):
+    def veto(self, seed, mode):
         """
         Parameters:
          - seed
+         - mode
 
         """
         pass
@@ -64,19 +65,21 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "initModel failed: unknown result")
 
-    def veto(self, seed):
+    def veto(self, seed, mode):
         """
         Parameters:
          - seed
+         - mode
 
         """
-        self.send_veto(seed)
+        self.send_veto(seed, mode)
         return self.recv_veto()
 
-    def send_veto(self, seed):
+    def send_veto(self, seed, mode):
         self._oprot.writeMessageBegin('veto', TMessageType.CALL, self._seqid)
         args = veto_args()
         args.seed = seed
+        args.mode = mode
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
@@ -148,7 +151,7 @@ class Processor(Iface, TProcessor):
         iprot.readMessageEnd()
         result = veto_result()
         try:
-            result.success = self._handler.veto(args.seed)
+            result.success = self._handler.veto(args.seed, args.mode)
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -276,12 +279,14 @@ class veto_args(object):
     """
     Attributes:
      - seed
+     - mode
 
     """
 
 
-    def __init__(self, seed=None,):
+    def __init__(self, seed=None, mode=None,):
         self.seed = seed
+        self.mode = mode
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -297,6 +302,11 @@ class veto_args(object):
                     self.seed = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.mode = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -310,6 +320,10 @@ class veto_args(object):
         if self.seed is not None:
             oprot.writeFieldBegin('seed', TType.STRING, 1)
             oprot.writeString(self.seed.encode('utf-8') if sys.version_info[0] == 2 else self.seed)
+            oprot.writeFieldEnd()
+        if self.mode is not None:
+            oprot.writeFieldBegin('mode', TType.STRING, 2)
+            oprot.writeString(self.mode.encode('utf-8') if sys.version_info[0] == 2 else self.mode)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -331,6 +345,7 @@ all_structs.append(veto_args)
 veto_args.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'seed', 'UTF8', None, ),  # 1
+    (2, TType.STRING, 'mode', 'UTF8', None, ),  # 2
 )
 
 

@@ -73,6 +73,8 @@ struct _RndServiceVetoArgs
   /* public */
   gchar * seed;
   gboolean __isset_seed;
+  gchar * mode;
+  gboolean __isset_mode;
 };
 typedef struct _RndServiceVetoArgs RndServiceVetoArgs;
 

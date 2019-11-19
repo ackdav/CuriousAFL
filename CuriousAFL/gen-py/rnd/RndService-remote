@@ -25,7 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  double initModel()')
-    print('  double veto(string seed)')
+    print('  double veto(string seed, string mode)')
     print('')
     sys.exit(0)
 
@@ -112,10 +112,10 @@ if cmd == 'initModel':
     pp.pprint(client.initModel())
 
 elif cmd == 'veto':
-    if len(args) != 1:
-        print('veto requires 1 args')
+    if len(args) != 2:
+        print('veto requires 2 args')
         sys.exit(1)
-    pp.pprint(client.veto(args[0],))
+    pp.pprint(client.veto(args[0], args[1],))
 
 else:
     print('Unrecognized method %s' % cmd)
