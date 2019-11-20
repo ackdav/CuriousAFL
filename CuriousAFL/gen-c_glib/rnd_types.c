@@ -392,7 +392,8 @@ rnd_service_init_model_result_get_type (void)
 enum _RndServiceVetoArgsProperties
 {
   PROP_RND_SERVICE_VETO_ARGS_0,
-  PROP_RND_SERVICE_VETO_ARGS_SEED
+  PROP_RND_SERVICE_VETO_ARGS_SEED,
+  PROP_RND_SERVICE_VETO_ARGS_MODE
 };
 
 /* reads a rnd_service_veto_args object */
@@ -463,6 +464,25 @@ rnd_service_veto_args_read (ThriftStruct *object, ThriftProtocol *protocol, GErr
           xfer += ret;
         }
         break;
+      case 2:
+        if (ftype == T_STRING)
+        {
+          if (this_object->mode != NULL)
+          {
+            g_free(this_object->mode);
+            this_object->mode = NULL;
+          }
+
+          if ((ret = thrift_protocol_read_string (protocol, &this_object->mode, error)) < 0)
+            return -1;
+          xfer += ret;
+          this_object->__isset_mode = TRUE;
+        } else {
+          if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
+            return -1;
+          xfer += ret;
+        }
+        break;
       default:
         if ((ret = thrift_protocol_skip (protocol, ftype, error)) < 0)
           return -1;
@@ -502,6 +522,16 @@ rnd_service_veto_args_write (ThriftStruct *object, ThriftProtocol *protocol, GEr
   if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
     return -1;
   xfer += ret;
+  if ((ret = thrift_protocol_write_field_begin (protocol, "mode", T_STRING, 2, error)) < 0)
+    return -1;
+  xfer += ret;
+  if ((ret = thrift_protocol_write_string (protocol, this_object->mode, error)) < 0)
+    return -1;
+  xfer += ret;
+
+  if ((ret = thrift_protocol_write_field_end (protocol, error)) < 0)
+    return -1;
+  xfer += ret;
   if ((ret = thrift_protocol_write_field_stop (protocol, error)) < 0)
     return -1;
   xfer += ret;
@@ -529,6 +559,13 @@ rnd_service_veto_args_set_property (GObject *object,
       self->__isset_seed = TRUE;
       break;
 
+    case PROP_RND_SERVICE_VETO_ARGS_MODE:
+      if (self->mode != NULL)
+        g_free (self->mode);
+      self->mode = g_value_dup_string (value);
+      self->__isset_mode = TRUE;
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -549,6 +586,10 @@ rnd_service_veto_args_get_property (GObject *object,
       g_value_set_string (value, self->seed);
       break;
 
+    case PROP_RND_SERVICE_VETO_ARGS_MODE:
+      g_value_set_string (value, self->mode);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -562,6 +603,8 @@ rnd_service_veto_args_instance_init (RndServiceVetoArgs * object)
   THRIFT_UNUSED_VAR (object);
   object->seed = NULL;
   object->__isset_seed = FALSE;
+  object->mode = NULL;
+  object->__isset_mode = FALSE;
 }
 
 static void 
@@ -575,6 +618,11 @@ rnd_service_veto_args_finalize (GObject *object)
   {
     g_free(tobject->seed);
     tobject->seed = NULL;
+  }
+  if (tobject->mode != NULL)
+  {
+    g_free(tobject->mode);
+    tobject->mode = NULL;
   }
 }
 
@@ -595,6 +643,15 @@ rnd_service_veto_args_class_init (RndServiceVetoArgsClass * cls)
     (gobject_class,
      PROP_RND_SERVICE_VETO_ARGS_SEED,
      g_param_spec_string ("seed",
+                          NULL,
+                          NULL,
+                          NULL,
+                          G_PARAM_READWRITE));
+
+  g_object_class_install_property
+    (gobject_class,
+     PROP_RND_SERVICE_VETO_ARGS_MODE,
+     g_param_spec_string ("mode",
                           NULL,
                           NULL,
                           NULL,

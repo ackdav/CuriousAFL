@@ -99,7 +99,7 @@ class Dispatcher(object):
         except:
             return 1
 
-    def veto(self, seed):
+    def veto(self, seed, mode):
         """
         main func for AFL to call
         :param seed:
@@ -109,21 +109,11 @@ class Dispatcher(object):
         global step_counter
         step_counter += 1
         #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
-        #if np.random.random(1)[0] < depth/100:
-        #    return 0
-        #if np.random.random(1)[0] < 0.7:
-        #    return 1
-        #else:
-        #    return 0
-        
         
         byte_array = np.fromfile(os.path.join(self.args.projectbase ,seed), 'u1', MAX_FILESIZE)
-        #else:
         #    byte_array = np.array(list(out_buf), dtype=np.float)
         #    byte_array = byte_array[:len_]
-        #print(len(buff_array), len_, len(byte_array))
 
-        #
         byte_array = byte_array / 255
 
         #byte_array = np.unpackbits(byte_array)  # min max normalized
@@ -146,15 +136,13 @@ class Dispatcher(object):
         global reward_buffer
         reward_buffer.append(reward)
 
-        if reward < np.percentile(np.array(reward_buffer), [10])[0]:
-            #reward < median(list(reward_buffer)[-int(len(reward_buffer)):]):
-            return 1
+        if mode == "MUTATION" and reward < np.percentile(np.array(reward_buffer), [10])[0]:
+            return 1.0
 
-        if np.random.random(1)[0] > 0.75:
-            global replay_buffer
-            replay_buffer.append(state)
+        global replay_buffer
+        replay_buffer.append(state)
 
-        if step_counter > 10000:
+        if mode == "MUTATION" and step_counter > 10000 or mode=="CASE":
             #update model
             replay_buffer_l = np.array(replay_buffer, dtype='object')
             num_ = len(replay_buffer_l)
@@ -170,9 +158,10 @@ class Dispatcher(object):
             #print('updated model')
             torch.cuda.empty_cache()
             step_counter = 0
-
-        return 0
-
+        if mode == "MUTATION":
+            return 0.0
+        else:
+            return reward + 0.5
 
 def get_open_port():
     # This is very ugly, don't copy this, don't look at this, forget this was ever here

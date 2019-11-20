@@ -4636,7 +4636,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     // Curious
     switch(schedule){
         case MUTATION:
-            if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
+            if (rnd_service_if_veto(client, &pyReturn, out_file, "MUTATION", &error)) {
                 if (pyReturn == 1.0){
                     return 1;
                 }
@@ -4768,7 +4768,7 @@ static u32 calculate_score(struct queue_entry* q) {
         case MUTATION:
             break;
         case CASE:
-            if (rnd_service_if_veto(client, &pyReturn, out_file, &error)) {
+            if (rnd_service_if_veto(client, &pyReturn, out_file, "CASE", &error)) {
                 perf_score *= pyReturn;
             }
             break;
