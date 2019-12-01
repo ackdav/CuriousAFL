@@ -6,6 +6,7 @@ test/
 afl-fuzz
 Notebooks/*.png
 Notebooks/edgecoverage/
+Notebooks/api_token.txt
 ## Default C Ignore
 
 # Prerequisites
