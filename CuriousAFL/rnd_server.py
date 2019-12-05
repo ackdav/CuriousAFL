@@ -161,7 +161,7 @@ class Dispatcher(object):
         if mode == "MUTATION":
             return 0.0
         else:
-            return reward + 0.5
+            return reward*100
 
 def get_open_port():
     # This is very ugly, don't copy this, don't look at this, forget this was ever here
