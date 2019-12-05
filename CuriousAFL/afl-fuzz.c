@@ -4655,6 +4655,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
             if (r2() > randomPercentile){
                 return 1;
             }
+            break;
         default:
             PFATAL ("Unkown Curiosity Mode");
     }
@@ -7133,8 +7134,9 @@ static void usage(u8* argv0) {
        "  -f file       - location read by the fuzzed program (stdin)\n"
        "  -t msec       - timeout for each run (auto-scaled, 50-%u ms)\n"
        "  -m megs       - memory limit for child process (%u MB)\n"
-       "  -Q            - use binary-only instrumentation (QEMU mode)\n\n"
+       "  -Q            - use binary-only instrumentation (QEMU mode)\n"
        "  -R mode       - Curiosity mode (CASE / MUTATION / RANDOM), default: MUTATION)\n"
+       "  -r percentile  - If curiosity == RANDOM, provide percentile value when fuzzer should cancel out of current seed\n\n"
 
        "Fuzzing behavior settings:\n\n"
 
