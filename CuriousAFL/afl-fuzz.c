@@ -7813,7 +7813,7 @@ int main(int argc, char** argv) {
   gettimeofday(&tv, &tz);
   srandom(tv.tv_sec ^ tv.tv_usec ^ getpid());
 
-  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:R:P:Q")) > 0)
+  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:R:r:P:Q")) > 0)
 
     switch (opt) {
 
@@ -7979,13 +7979,19 @@ int main(int argc, char** argv) {
                 schedule = CASE;
             } else if (!stricmp(optarg, "random")) {
                 schedule = RANDOM;
-                randomPercentile = (double) atoi(optarg)/100;
             }
             else{
                 FATAL("Could not parse Curiosity mode (-R). Values are: MUTATION, CASE or RANDOM.");
             }
             break;
-
+        case 'r': /* Power schedule */
+            switch (schedule) {
+                case RANDOM:
+                    randomPercentile = atof(optarg) / 100;
+                    break;
+                default:
+                    FATAL("You provided a percentile value without being in random mode. Either -R RANDOM or not provide -r.");
+            }
         case 'P':
             switch (schedule){
                 case RANDOM:
