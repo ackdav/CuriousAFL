@@ -32,7 +32,7 @@
 #include "alloc-inl.h"
 #include "hash.h"
 
-//Curious Edit:
+//CuriousAFL Edit:
 #include <glib-object.h>
 #include <thrift/c_glib/protocol/thrift_binary_protocol.h>
 #include <thrift/c_glib/transport/thrift_buffered_transport.h>
@@ -83,13 +83,12 @@
 #  define EXP_ST static
 #endif /* ^AFL_LIB */
 
-//Curious Edit:
-// thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
+//CuriousAFL Edit:
+//thrift reference: https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift
 ThriftSocket *socket;
 ThriftTransport *transport;
 ThriftProtocol *protocol;
 RndServiceIf *client;
-
 GError *error = NULL;
 
 double pyReturn;
@@ -105,9 +104,9 @@ enum {
 
 double r2()
 {
+   // helper function for CuriousAFL that generates a pseudo-random double between 0 and 1
     return (double)rand() / (double)RAND_MAX ;
 }
-//Curious
 
 /* Lots of globals, but mostly for the status UI and other things where it
    really makes no sense to haul them around as function parameters. */
@@ -4630,17 +4629,15 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
 
   write_to_testcase(out_buf, len);
 
+    // CuriousAFL Edit:
     // out_file is file to fuzz which should be input
     // queue_cur is current offset in queue which should be seed
-
-    //Curious Edit:
-    //if (!error && rnd_if_veto(client, &pyReturn, queue_cur->fname, &error)) {
+    // queue_cur->fname is filename of currently mutated seed
     //
-    //queue_cur->fname current seed that's being mutated in some sort
-    //char f_[len+1];
-    //strncpy(f_, out_buf, len );
+    // case MUTATION: connect to python module and cancel out depending on answer
+    // case CASE: not used here
+    // case RANDOM: generate random number between 0 and 1 and cancel depending on program argument input
 
-    // Curious
     switch (schedule){
         case MUTATION:
             if (rnd_service_if_veto(client, &pyReturn, out_file, "MUTATION", &error)) {
@@ -4652,8 +4649,8 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
         case CASE:
             break;
         case RANDOM:
-            if (r2() < randomPercentile){
-                return 1;
+	    if (r2() < randomPercentile){
+		    return 1;
             }
             break;
         default:
@@ -4776,6 +4773,9 @@ static u32 calculate_score(struct queue_entry* q) {
      in the game we learned about this path. Latecomers are allowed to run
      for a bit longer until they catch up with the rest. */
 
+  // CuriousAFL Edit:
+  // This is an undocumented mode of CASE curiosity, where we only consider curiosity once a seed is found.
+  // It's undocumented in the thesis, but still an interesting case to consider.
     switch (schedule){
         case MUTATION:
             break;
@@ -7973,7 +7973,12 @@ int main(int argc, char** argv) {
         if (use_banner) FATAL("Multiple -T options not supported");
         use_banner = optarg;
         break;
-
+	
+      //CuriousAFL Edit:
+      //Program arguments are expanded to consider
+      //-R -> Mode
+      //-r -> Percentile value for RANDOM mode
+      //-P -> Port to connect to Thrift Server, if mode!=RANDOM
       case 'R': /* Power schedule */
             if (!stricmp(optarg, "mutation")) {
                 schedule = MUTATION;
@@ -7999,7 +8004,7 @@ int main(int argc, char** argv) {
                 case RANDOM:
                     break;
                 default:
-                    // Edits for augmented afl-fuzz
+                    // connect to RPC server
                     #if (!GLIB_CHECK_VERSION (2, 36, 0))
                                         g_type_init ();
                     #endif
@@ -8251,14 +8256,14 @@ stop_fuzzing:
   OKF("We're done here. Have a nice day!\n");
 
 
-  //Curious Edit:
+  //CuriousAFL Edit:
+  //Always clean up after yourself
   thrift_transport_close (transport, NULL);
 
   g_object_unref (client);
   g_object_unref (protocol);
   g_object_unref (transport);
   g_object_unref (socket);
-  //Curious
 
   exit(0);
 
