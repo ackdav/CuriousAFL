@@ -101,22 +101,17 @@ class Dispatcher(object):
 
     def veto(self, seed, mode):
         """
-        main func for AFL to call
-        :param seed:
-        :return: 0 if seed should be executed, 1 if should be skipped
+        main func for AFL to call -
+        :param mode: CuriousAFL mode (MUTATION / CASE)
+        :param seed: Seed to consider (in MUTATION always ./afl_out/.cur_input - in CASE always seed filename)
+        :return: depending on mode:  in MUTATION (1: cancel out of seed, 0: continue), in CASE: performance multiplier.
         """
         global rnd_model
         global step_counter
         step_counter += 1
-        #byte_arr = np.fromfile(self.args.projectbase + seed, 'utf8')
-        
-        byte_array = np.fromfile(os.path.join(self.args.projectbase ,seed), 'u1', MAX_FILESIZE)
-        #    byte_array = np.array(list(out_buf), dtype=np.float)
-        #    byte_array = byte_array[:len_]
 
+        byte_array = np.fromfile(os.path.join(self.args.projectbase, seed), 'u1', MAX_FILESIZE)
         byte_array = byte_array / 255
-
-        #byte_array = np.unpackbits(byte_array)  # min max normalized
 
         if byte_array.shape[0] > MAX_FILESIZE:
             byte_array = byte_array[:MAX_FILESIZE]
@@ -143,12 +138,10 @@ class Dispatcher(object):
         replay_buffer.append(state)
 
         if mode == "MUTATION" and step_counter > 10000 or mode=="CASE":
-            #update model
+            # Update RND Model
             replay_buffer_l = np.array(replay_buffer, dtype='object')
-            num_ = len(replay_buffer_l)
-            K = np.min([num_, BATCH_SIZE])
-            #samples = np.array(random.sample(replay_buffer, K))
-            samples = replay_buffer_l[np.random.choice(len(replay_buffer_l), K, replace=False)]
+            num_seeds_considered = np.min([len(replay_buffer_l), BATCH_SIZE])
+            samples = replay_buffer_l[np.random.choice(len(replay_buffer_l), num_seeds_considered, replace=False)]
 
             S0 = torch.stack(list(samples)).to(device=device)
             #S0 = torch.tensor(samples, dtype=torch.float).to(device=device)
