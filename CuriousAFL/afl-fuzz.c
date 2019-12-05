@@ -94,12 +94,19 @@ GError *error = NULL;
 
 double pyReturn;
 int exit_status = 0;
+double randomPercentile;
 
 static u8 schedule = 0;               /* Curiosity mode */
 enum {
     /* 00 */ MUTATION,                /* Mutation mode */
     /* 01 */ CASE,                    /* Case mode*/
+    /* 02 */ RANDOM,                    /* Case mode*/
 };
+
+double r2()
+{
+    return (double)rand() / (double)RAND_MAX ;
+}
 //Curious
 
 /* Lots of globals, but mostly for the status UI and other things where it
@@ -4634,7 +4641,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
     //strncpy(f_, out_buf, len );
 
     // Curious
-    switch(schedule){
+    switch (schedule){
         case MUTATION:
             if (rnd_service_if_veto(client, &pyReturn, out_file, "MUTATION", &error)) {
                 if (pyReturn == 1.0){
@@ -4644,6 +4651,10 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
             break;
         case CASE:
             break;
+        case RANDOM:
+            if (r2() > randomPercentile){
+                return 1;
+            }
         default:
             PFATAL ("Unkown Curiosity Mode");
     }
@@ -4764,9 +4775,12 @@ static u32 calculate_score(struct queue_entry* q) {
      in the game we learned about this path. Latecomers are allowed to run
      for a bit longer until they catch up with the rest. */
 
-    switch(schedule){
+    switch (schedule){
         case MUTATION:
             break;
+        case RANDOM:
+            break;
+
         case CASE:
             if (rnd_service_if_veto(client, &pyReturn, out_file, "CASE", &error)) {
                 perf_score *= pyReturn;
@@ -7112,7 +7126,7 @@ static void usage(u8* argv0) {
 
        "  -i dir        - input directory with test cases\n"
        "  -o dir        - output directory for fuzzer findings\n"
-       "  -P port       - port to connect to RPC server\n\n"
+       "  -P port       - port to connect to RPC server, not needed if -R == RANDOM\n\n"
 
        "Execution control settings:\n\n"
 
@@ -7120,7 +7134,7 @@ static void usage(u8* argv0) {
        "  -t msec       - timeout for each run (auto-scaled, 50-%u ms)\n"
        "  -m megs       - memory limit for child process (%u MB)\n"
        "  -Q            - use binary-only instrumentation (QEMU mode)\n\n"
-       "  -R mode       - Curiosity mode (CASE or MUTATION), default: MUTATION)\n"
+       "  -R mode       - Curiosity mode (CASE / MUTATION / RANDOM), default: MUTATION)\n"
 
        "Fuzzing behavior settings:\n\n"
 
@@ -7799,7 +7813,7 @@ int main(int argc, char** argv) {
   gettimeofday(&tv, &tz);
   srandom(tv.tv_sec ^ tv.tv_usec ^ getpid());
 
-  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:P:R:Q")) > 0)
+  while ((opt = getopt(argc, argv, "+i:o:f:m:t:T:dnCB:S:M:x:R:P:Q")) > 0)
 
     switch (opt) {
 
@@ -7958,48 +7972,61 @@ int main(int argc, char** argv) {
         use_banner = optarg;
         break;
 
-        case 'P':
-            // Edits for augmented afl-fuzz
-#if (!GLIB_CHECK_VERSION (2, 36, 0))
-            g_type_init ();
-#endif
-
-            socket    = g_object_new (THRIFT_TYPE_SOCKET,
-                                      "hostname",  "127.0.0.1",
-                                      "port",      atoi(optarg),
-                                      NULL);
-            transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
-                                      "transport", socket,
-                                      NULL);
-            protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
-                                      "transport", transport,
-                                      NULL);
-
-            thrift_transport_open (transport, &error);
-
-            client = g_object_new (TYPE_RND_SERVICE_CLIENT,
-                                   "input_protocol",  protocol,
-                                   "output_protocol", protocol,
-                                   NULL);
-
-            if (error){
-                FATAL("Could not connect to RND-Python-Server");
-            }
-            // ping for init models
-            if (rnd_service_if_init_model (client, &pyReturn, &error)) {
-                puts("initModel()");
-            }
-
-            // End of header edits
-            break;
-
       case 'R': /* Power schedule */
             if (!stricmp(optarg, "mutation")) {
                 schedule = MUTATION;
             } else if (!stricmp(optarg, "case")) {
                 schedule = CASE;
+            } else if (!stricmp(optarg, "random")) {
+                schedule = RANDOM;
+                randomPercentile = (double) atoi(optarg)/100;
+            }
+            else{
+                FATAL("Could not parse Curiosity mode (-R). Values are: MUTATION, CASE or RANDOM.");
             }
             break;
+
+        case 'P':
+            switch (schedule){
+                case RANDOM:
+                    break;
+                default:
+                    // Edits for augmented afl-fuzz
+                    #if (!GLIB_CHECK_VERSION (2, 36, 0))
+                                        g_type_init ();
+                    #endif
+
+                    socket    = g_object_new (THRIFT_TYPE_SOCKET,
+                                              "hostname",  "127.0.0.1",
+                                              "port",      atoi(optarg),
+                                              NULL);
+                    transport = g_object_new (THRIFT_TYPE_BUFFERED_TRANSPORT,
+                                              "transport", socket,
+                                              NULL);
+                    protocol  = g_object_new (THRIFT_TYPE_BINARY_PROTOCOL,
+                                              "transport", transport,
+                                              NULL);
+
+                    thrift_transport_open (transport, &error);
+
+                    client = g_object_new (TYPE_RND_SERVICE_CLIENT,
+                                           "input_protocol",  protocol,
+                                           "output_protocol", protocol,
+                                           NULL);
+
+                    if (error){
+                        FATAL("Could not connect to RND-Python-Server");
+                    }
+                    // ping for init models
+                    if (rnd_service_if_init_model (client, &pyReturn, &error)) {
+                        puts("initModel()");
+                    }
+                break;
+                }
+            // End of header edits
+            break;
+
+
       case 'Q': /* QEMU mode */
 
         if (qemu_mode) FATAL("Multiple -Q options not supported");
@@ -8034,7 +8061,8 @@ int main(int argc, char** argv) {
     switch (schedule) {
         case MUTATION:    OKF ("Using Mutational-Curiosity"); break;
         case CASE:         OKF ("Using Case-Curiosity"); break;
-        default : FATAL ("Unkown curiosity mode"); break;
+        case RANDOM:         OKF ("Using Random-Curiosity"); break;
+        default :               FATAL ("Unkown curiosity mode"); break;
     }
 
   if (getenv("AFL_NO_FORKSRV"))    no_forkserver    = 1;
