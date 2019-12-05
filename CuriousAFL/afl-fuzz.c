@@ -4652,7 +4652,7 @@ EXP_ST u8 common_fuzz_stuff(char** argv, u8* out_buf, u32 len) {
         case CASE:
             break;
         case RANDOM:
-            if (r2() > randomPercentile){
+            if (r2() < randomPercentile){
                 return 1;
             }
             break;
