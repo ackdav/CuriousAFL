@@ -10,7 +10,7 @@ We extended AFL to use 3 additional flags:
 | --- | --- |
 | -R MODE | Run CuriousAFL in either MUTATION (default), RANDOM, CASE   |
 | -P **Port**| Connect to Python Curiosity RPC server on port **Port**. Only needed in MUTATION and CASE. |
-| -r Percentile | If CuriousAFL runs in RANDOM mode, provide a percentile value to cancel out of seeds (e.g. 10) |
+| -r Percentile | If CuriousAFL runs in RANDOM mode, provide a percentile value to cancel out of seeds (e.g. 10, default: 0) |
 
 ## Seeds  
 All seeds used in the thesis can be found in the [folder](https://github.com/derdav3/CuriousAFL/tree/master/seeds_programs) "seeds_programs".
