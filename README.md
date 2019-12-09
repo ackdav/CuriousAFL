@@ -9,7 +9,7 @@ We extended AFL to use 3 additional flags:
 | **AFL-Flag** | **Mode**   |
 | --- | --- |
 | -R MODE | Run CuriousAFL in either MUTATION (default), RANDOM, CASE   |
-| -P **Portnumber**| Connect to Python Curiosity RPC server on port **Portnumber**. Only needed in MUTATION and RANDOM. |
+| -P **Port**| Connect to Python Curiosity RPC server on port **Port**. Only needed in MUTATION and CASE. |
 | -r Percentile | If CuriousAFL runs in RANDOM mode, provide a percentile value to cancel out of seeds (e.g. 10) |
 
 ## Seeds  
@@ -18,7 +18,7 @@ All seeds used in the thesis can be found in the [folder](https://github.com/der
 ## Examples
 It's helpful to understand how to run "vanilla" AFL, before trying to run CuriousAFL. Please refer to the official [source](http://lcamtuf.coredump.cx/afl/README.txt) for a guide.
 
-After following our [Installation guide](https://github.com/derdav3/CuriousAFL/wiki/Installation), the following are possible usecases (assuming you have CuriousAFL in /home/CuriousAFL):
+After following our [Installation guide](https://github.com/derdav3/CuriousAFL/wiki/Installation), the following are possible usecases (assuming you have CuriousAFL in /home/CuriousAFL and there is a seed folder `afl_in`):
 
 ### MUTATION (objdump)
 `cd` into the testcase folder (including a folder with your testcases).  
