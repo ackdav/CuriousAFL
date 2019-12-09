@@ -1,3 +1,5 @@
 tensorboard
 torch
 thriftpy2
+numpy
+thrift
