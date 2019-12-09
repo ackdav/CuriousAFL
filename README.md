@@ -24,7 +24,7 @@ After following our [Installation guide](https://github.com/derdav3/CuriousAFL/w
 `cd` into the testcase folder and start 2 terminals.  
 
 Launch the python RND script:  
-`python /home/CuriousAFL/CuriousAFL/rnd_server.py --projectbase=./ --port 44444`
+`python3 /home/CuriousAFL/CuriousAFL/rnd_server.py --projectbase=./ --port 44444`
 
 Launch CuriousAFL:  
 `/home/CuriousAFL/CuriousAFL/afl-fuzz -i afl_in/ -o afl_out/ -R MUTATION -P 44444 ./objdump -D @@`
