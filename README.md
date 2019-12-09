@@ -21,7 +21,8 @@ It's helpful to understand how to run "vanilla" AFL, before trying to run Curiou
 After following our [Installation guide](https://github.com/derdav3/CuriousAFL/wiki/Installation), the following are possible usecases (assuming you have CuriousAFL in /home/CuriousAFL and there is a seed folder `afl_in`):
 
 ### MUTATION (objdump)
-`cd` into the testcase folder.  
+`cd` into the testcase folder and start 2 terminals.  
+
 Launch the python RND script:  
 `python /home/CuriousAFL/CuriousAFL/rnd_server.py --projectbase=./ --port 44444`
 
