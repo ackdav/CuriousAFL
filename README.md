@@ -2,7 +2,7 @@
 
 This is the code base for the thesis "Curiosity Guided Fuzz Testing".
   
-CuriousAFL extends [AFL](https://github.com/mirrorer/afl) with 3 different modes: MUTATION, RANDOM, CASE (undocumented in thesis). MUTATION and RANDOM extend afl-fuzz.c in function "common_fuzz_stuff" and CASE in function "calculate_score".
+CuriousAFL extends [AFL](https://github.com/mirrorer/afl) with 3 different modes: MUTATION, RANDOM and CASE (undocumented in thesis). MUTATION and RANDOM extend afl-fuzz.c in function "common_fuzz_stuff" and CASE in function "calculate_score".
 
 We extended AFL to use 3 additional flags:
 
